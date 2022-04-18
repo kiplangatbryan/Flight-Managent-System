@@ -11,12 +11,11 @@
         active-color="primary"
         indicator-color="primary"
         align="justify"
-        style="max-width: 800px"
+        style="max-width: 700px"
       >
         <q-tab icon="flight" name="flights" color="secondary" label="Flights" />
         <q-tab name="check_in" icon="door" label="Check In" />
-        <q-tab name="passengers" icon="" label="Flight Status" />
-        <q-tab name="passengers" icon="" label="Flight Timetable" />
+        <q-tab name="flight_status" icon="" label="Flight Status" />
       </q-tabs>
       <q-tab-panels
         v-model="tab"
@@ -32,9 +31,8 @@
           <slot name="CheckIn" />
         </q-tab-panel>
 
-        <q-tab-panel name="passengers">
-          <div class="text-h6">Mos</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        <q-tab-panel name="flight_status">
+          <slot name="FlightStatus" />
         </q-tab-panel>
       </q-tab-panels>
     </q-card>

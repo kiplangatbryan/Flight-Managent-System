@@ -22,7 +22,7 @@ const router = createRouter({
     {
       path: "/support",
       name: "support",
-      component: () => import("../views/AboutView.vue"),
+      component: () => import("../views/support.vue"),
     },
     {
       path: "/contact-us",

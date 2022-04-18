@@ -20,9 +20,9 @@ export default {
     <main class="logo-text text-white">Kenya <b>Airways</b></main>
     <nav>
       <RouterLink to="/">Book Flight</RouterLink>
-      <RouterLink to="/manage-booking">Manage Booking</RouterLink>
-      <RouterLink to="/flight-schedule">Guest Support</RouterLink>
-      <RouterLink to="/flight-schedule">About Us</RouterLink>
+      <RouterLink to="/make-a-booking">Manage Booking</RouterLink>
+      <RouterLink to="/support">Guest Support</RouterLink>
+      <RouterLink to="/about-us">About Us</RouterLink>
     </nav>
 
     <aside>
@@ -39,13 +39,17 @@ export default {
 header {
   display: flex;
   align-items: center;
-  padding: 1rem 0;
+  padding: 0.4rem 0 1em 0;
   justify-content: space-between;
 }
 
 .logo-text {
   font-size: 20px;
   margin-top: 15px;
+}
+
+aside * {
+  color: #fff;
 }
 
 a,

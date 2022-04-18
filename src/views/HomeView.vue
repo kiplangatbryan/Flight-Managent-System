@@ -22,19 +22,9 @@ export default {
 
   setup() {
     onMounted(() => {
-      setupFunc();
+      console.log("mounted");
     });
-
-    var imgUrl = ref("/src/assets/png-1.jpg");
-    var count = 1;
-
-    const setupFunc = () => {
-      setInterval(function () {
-        count++;
-        if (count > 4) count = 1;
-        imgUrl.value = `/src/assets/png-${count}.jpg`;
-      }, 10000);
-    };
+    const subscribe = ref(null);
 
     return {
       lorem: `Need Any Help",
@@ -60,8 +50,7 @@ export default {
         },
       ],
       modalShow: false,
-      setupFunc,
-      imgUrl,
+      subscribe,
     };
   },
 };
@@ -95,6 +84,9 @@ export default {
           <template v-slot:CheckIn>
             <TabCheckIn />
           </template>
+          <template v-slot:FlightStatus>
+            <TabCheckIn />
+          </template>
         </FlightSelectCard>
       </div>
       <KQSearch />
@@ -108,7 +100,7 @@ export default {
           we will take you there.
         </div>
 
-        <div class="row q-gutter-sm bg-dark">
+        <div class="row q-gutter-sm">
           <div class="col-5">
             <KQCard :flightId="101" />
           </div>
@@ -145,9 +137,10 @@ export default {
                 v-model="subscribe"
                 type="email"
                 label="Subscribe"
-                hint="Yourname@domain.com"
+                bg-color="white"
                 lazy-rules
                 class="max-width"
+                filled
                 outlined
                 placeholder="Your Email Address"
                 :rules="[
@@ -159,6 +152,7 @@ export default {
             <q-btn
               label="Subscribe"
               no-caps
+              style="font-size: 20px"
               outline
               color="dark"
               class="text-white"
