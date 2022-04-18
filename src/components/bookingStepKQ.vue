@@ -131,7 +131,7 @@ import { storeToRefs } from "pinia";
 
 export default {
   name: "create-task-modal",
-  
+
   setup() {
     const store = useAppStore();
 
