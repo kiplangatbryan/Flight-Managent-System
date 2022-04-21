@@ -1,3 +1,36 @@
+<script>
+import KQNavigation from "@/components/KQNavigation.vue";
+import FooterKQ from "@/components/FooterKQ.vue";
+import AvailableFlightsKQ from "@/components/displayFlights.vue";
+import passengerInfo from "@/components/passengerInfo.vue";
+import paymentOptions from "@/components/paymentOpt.vue";
+
+import { ref } from "vue";
+
+export default {
+  components: {
+    KQNavigation,
+    FooterKQ,
+    AvailableFlightsKQ,
+    passengerInfo,
+    paymentOptions,
+  },
+  setup() {
+    const step = ref(1);
+    const backFunc = () => {
+      step.value = step.value - 1;
+    };
+
+    return {
+      step,
+      editor: "",
+      backFunc,
+    };
+  },
+};
+</script>
+
+
 <template>
   <div class="body">
     <header class="main_nav">
@@ -6,8 +39,8 @@
 
     <!-- launch the search switcher here -->
 
-    <div class="row q-gutter-md content">
-      <div class="col-md-7 col-lg-7">
+    <div class="row content justify-between b-layout-fix">
+      <div class="col-md-9 col-lg-9">
         <q-card bordered flat>
           <q-stepper
             class="shadow-0"
@@ -34,11 +67,12 @@
 
             <q-step :name="2" title="Passengers" icon="people">
               <q-card flat bordered class="q-my-lg">
-                <q-card-section>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ea
-                  placeat hic incidunt modi quos praesentium, corrupti
-                  obcaecati! Soluta aliquam ullam, impedit quia numquam expedita
-                  suscipit ab aperiam vero modi accusantium.
+                <q-card-section class="fix-font">
+                  Try out different ad text to see what brings in the most
+                  customers, and learn how to enhance your ads using features
+                  like ad extensions. If you run into any problems with your
+                  ads, find out how to tell if they're running and how to
+                  resolve approval issues.
                 </q-card-section>
               </q-card>
               <passengerInfo />
@@ -55,21 +89,9 @@
               </q-stepper-navigation>
             </q-step>
 
-            <q-step
-              :name="3"
-              title="Seat Selection"
-              icon="seat"
-              class="adjust-step"
-            >
-              <q-card flat bordered class="q-my-lg">
-                <q-card-section>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ea
-                  placeat hic incidunt modi quos praesentium, corrupti
-                  obcaecati! Soluta aliquam ullam, impedit quia numquam expedita
-                  suscipit ab aperiam vero modi accusantium.
-                </q-card-section>
-              </q-card>
-              <seatSelectionEn />
+            <q-step :name="3" title="Payment" icon="seat" class="adjust-step">
+
+              <paymentOptions />
               <q-stepper-navigation>
                 <q-btn @click="step = 3" color="primary" label="Continue" />
                 <q-btn
@@ -89,11 +111,15 @@
               icon="thumbs"
               disable
             >
-              Try out different ad text to see what brings in the most
-              customers, and learn how to enhance your ads using features like
-              ad extensions. If you run into any problems with your ads, find
-              out how to tell if they're running and how to resolve approval
-              issues.
+              <q-card flat bordered class="q-my-lg">
+                <q-card-section>
+                  Try out different ad text to see what brings in the most
+                  customers, and learn how to enhance your ads using features
+                  like ad extensions. If you run into any problems with your
+                  ads, find out how to tell if they're running and how to
+                  resolve approval issues.
+                </q-card-section>
+              </q-card>
 
               <q-stepper-navigation>
                 <q-btn color="primary" label="Finish" />
@@ -110,7 +136,7 @@
         </q-card>
       </div>
 
-      <div class="col-md-4 col-lg-4">
+      <div class="col-md-auto col-lg-auto">
         <q-card flat bordered>
           <div class="content-apk">
             <q-card-section>
@@ -139,37 +165,7 @@
   </div>
 </template>
 
-<script>
-import KQNavigation from "@/components/KQNavigation.vue";
-import FooterKQ from "@/components/FooterKQ.vue";
-import AvailableFlightsKQ from "@/components/displayFlights.vue";
-import passengerInfo from "@/components/passengerInfo.vue";
-import seatSelectionEn from "@/components/seatSelectionEn.vue";
 
-import { ref } from "vue";
-
-export default {
-  components: {
-    KQNavigation,
-    FooterKQ,
-    AvailableFlightsKQ,
-    passengerInfo,
-    seatSelectionEn,
-  },
-  setup() {
-    const step = ref(1);
-    const backFunc = () => {
-      step.value = step.value - 1;
-    };
-
-    return {
-      step,
-      editor: "",
-      backFunc,
-    };
-  },
-};
-</script>
 
 <style lang="css" scoped>
 .main_nav {
@@ -185,7 +181,14 @@ export default {
 .adjust-step {
   font-size: 20px !important;
 }
+
+.fix-font {
+  font-size: 17px;
+}
 .body {
-  /* background: rgb(95, 237, 138); */
+  background: #e1e1e1;
+}
+.b-layout-fix {
+  gap: 8px !important;
 }
 </style>
