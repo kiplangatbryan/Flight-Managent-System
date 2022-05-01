@@ -7,6 +7,26 @@
         </div>
         <div class="subtitle-text1">Basic Information</div>
         <div class="form-card">
+          <div class="row">
+            <q-select
+              dense
+              outlined
+              v-model="flight_params"
+              :options="titleOptions"
+              label="Title"
+              color="teal"
+              class="col-4"
+              options-selected-class="text-deep-orange"
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.label }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <div class="row q-gutter-sm">
             <div class="col-6">
               <q-input
@@ -74,42 +94,6 @@
               />
             </div>
           </div>
-          <div class="row q-gutter-sm">
-            <div class="col-6">
-              <q-input
-                v-model="subscribe"
-                type="text"
-                label="Subscribe"
-                bg-color="white"
-                lazy-rules
-                class="max-width"
-                stack-label
-                outlined
-                placeholder="Your Email Address"
-                :rules="[
-                  (val) =>
-                    (val && val.length > 0) || 'Enter a valid Email address',
-                ]"
-              />
-            </div>
-            <div class="col-5">
-              <q-input
-                v-model="subscribe"
-                type="text"
-                label="phone njumber"
-                bg-color="white"
-                lazy-rules
-                class="max-width"
-                outlined
-                stack-label
-                placeholder="Your Phone Number"
-                :rules="[
-                  (val) =>
-                    (val && val.length >= 10) || 'Enter a valid Phone Number',
-                ]"
-              />
-            </div>
-          </div>
         </div>
       </q-card-section>
     </q-card>
@@ -165,6 +149,17 @@ export default {
   setup() {
     return {
       title: ref("Passenger 1"),
+      flight_params: ref(""),
+      titleOptions: [
+        {
+          label: "Mr",
+          value: "Mr",
+        },
+        {
+          label: "Mrs",
+          value: "Mrs",
+        },
+      ],
     };
   },
 };

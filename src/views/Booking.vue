@@ -30,7 +30,6 @@ export default {
 };
 </script>
 
-
 <template>
   <div class="body">
     <header class="main_nav">
@@ -38,10 +37,9 @@ export default {
     </header>
 
     <!-- launch the search switcher here -->
-
     <div class="row content justify-between b-layout-fix">
       <div class="col-md-9 col-lg-9">
-        <q-card bordered flat>
+        <q-card class="bg-primary">
           <q-stepper
             class="shadow-0"
             v-model="step"
@@ -67,12 +65,15 @@ export default {
 
             <q-step :name="2" title="Passengers" icon="people">
               <q-card flat bordered class="q-my-lg">
+                <q-card-section>
+                  <div class="text-h5 q-mb-none">
+                    Enter Passenger(s) Information
+                  </div>
+                </q-card-section>
                 <q-card-section class="fix-font">
-                  Try out different ad text to see what brings in the most
-                  customers, and learn how to enhance your ads using features
-                  like ad extensions. If you run into any problems with your
-                  ads, find out how to tell if they're running and how to
-                  resolve approval issues.
+                  Please Enter the informaion for all the passengers on this
+                  itenary and seelect continue. Please use English letters and
+                  words.
                 </q-card-section>
               </q-card>
               <passengerInfo />
@@ -90,7 +91,6 @@ export default {
             </q-step>
 
             <q-step :name="3" title="Payment" icon="seat" class="adjust-step">
-
               <paymentOptions />
               <q-stepper-navigation>
                 <q-btn @click="step = 3" color="primary" label="Continue" />
@@ -160,17 +160,13 @@ export default {
         </q-card>
       </div>
     </div>
-
     <FooterKQ />
   </div>
 </template>
 
-
-
 <style lang="css" scoped>
 .main_nav {
   background: #000;
-  background-size: cover;
   padding: 0 10em;
 }
 
@@ -185,9 +181,7 @@ export default {
 .fix-font {
   font-size: 17px;
 }
-.body {
-  background: #e1e1e1;
-}
+
 .b-layout-fix {
   gap: 8px !important;
 }

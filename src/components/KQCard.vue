@@ -1,22 +1,18 @@
 <template>
-  <div class="card__main">
-    <img :src="imgUrl" />
-    <div class="row items-center q-pa-md location text-white">
-      <q-icon size="20" name="location" />
-      <div class="content">
-        <div class="text-h5">
-          {{ country }}
-        </div>
-        <div class="subtitle-text">
-          {{ city }}
-        </div>
-      </div>
+  <div class="card__main shadow-2">
+    <div class="card-img-cont">
+      <img :src="imgUrl" />
     </div>
-    <div class="card-actions q-pa-md text-white">
-      <div class="text-h4 q-mb-lg">
-        {{ msg }}
+    <div class="card_body">
+      <div class="text-h5 q-mb-sm">
+        {{ city }}
       </div>
-      <q-btn label="Book Now" rounded outline color="secondary" no-caps />
+
+      <div class="subtitle-text">Economy from</div>
+      <div class="row items-start text-bold">
+        <div class="currency">KES</div>
+        <div class="text-h5 q-ml-sm">308,400</div>
+      </div>
     </div>
   </div>
 </template>
@@ -47,24 +43,21 @@ export default {
 
 <style scoped>
 .card__main {
-  min-width: 100%;
   position: relative;
+  border-radius: 4px;
+  overflow: hidden;
 }
+.currency {
+  font-size: 14px;
+  margin-top: 3px;
+}
+
 .card__main img {
   width: 100%;
-  height: 100%;
+  height: 80%;
   object-fit: cover;
 }
-.card__main .location {
-  position: absolute;
-  top: 5%;
-  left: 0;
-  right: 0;
-}
-.card__main .card-actions {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.card_body {
+  padding: 0.5em 1.5em;
 }
 </style>

@@ -67,9 +67,8 @@ export default {
       </h3>
 
       <q-btn
-        to="/explore"
+        to="/make-a-booking"
         color="primary"
-        class="bg-accent-kq"
         style="font-size: 20px"
         no-caps
         label="Book Now &#10230;"
@@ -175,8 +174,8 @@ export default {
 
 .landing_text {
   text-align: left;
-  line-height: 1.4;
-  margin-top: 3rem;
+  line-height: 1.5;
+  margin-top: 5rem !important;
 }
 .max-width {
   max-width: 500px;
@@ -215,9 +214,9 @@ a {
 
 .landing_section {
   width: 100%;
-  min-height: 60vh;
+  min-height: 70vh;
   background: linear-gradient(-45deg, transparent, #141414),
-    url("@/assets/png-3.jpg") center;
+    url("@/assets/png-1.jpg") center;
   background-size: cover;
   background-attachment: fixed;
   padding: 0 10rem;
@@ -225,7 +224,7 @@ a {
 
 .flight_select {
   position: relative;
-  top: -40px;
+  top: -80px;
   display: flex;
   justify-content: center;
 }

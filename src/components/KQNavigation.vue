@@ -17,13 +17,15 @@ export default {
 
 <template>
   <header>
-    <main class="logo-text text-white">Kenya <b>Airways</b></main>
-    <nav>
-      <RouterLink to="/">Book Flight</RouterLink>
-      <RouterLink to="/make-a-booking">Manage Booking</RouterLink>
-      <RouterLink to="/support">Guest Support</RouterLink>
-      <RouterLink to="/about-us">About Us</RouterLink>
-    </nav>
+    <main class="row items-center">
+      <main class="logo-text text-white q-mr-lg">Kenya <b>Airways</b></main>
+      <nav>
+        <RouterLink to="/">Book Flight</RouterLink>
+        <RouterLink to="/make-a-booking">Manage Booking</RouterLink>
+        <RouterLink to="/support">Guest Support</RouterLink>
+        <RouterLink to="/about-us">About Us</RouterLink>
+      </nav>
+    </main>
 
     <aside>
       <q-btn flat @click="searchToggle">

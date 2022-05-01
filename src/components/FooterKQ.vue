@@ -83,6 +83,8 @@ main {
 .route- {
   font-size: 16px;
   margin-bottom: -5px;
+  border-left: unset;
+  margin-left: unset;
 }
 .fore-link,
 .copy {
