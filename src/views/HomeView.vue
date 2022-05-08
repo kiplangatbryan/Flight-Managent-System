@@ -9,6 +9,8 @@ import KQCard from "@/components/KQCard.vue";
 
 import { onMounted, ref } from "vue";
 
+import { useAppStore } from "@/stores/main";
+
 export default {
   components: {
     KQNavigation,
@@ -19,36 +21,19 @@ export default {
     FooterKQ,
     KQCard,
   },
+  name: "home",
 
   setup() {
     onMounted(() => {
       console.log("mounted");
     });
     const subscribe = ref(null);
+    const store = useAppStore();
+
+    const { flights } = store;
 
     return {
-      lorem: `Need Any Help",
-          title: "Cancle a Trip",
-          msg: "You want to clear your booking, don't worry, we've got you", btnText: "Change Timeline",
-          title: "Swap FLight",
-          msg: "You want to clear your booking, don't worry, we've got you"`,
-      help_array: [
-        {
-          btnText: "Need Any Help",
-          title: "Cancle a Trip",
-          msg: "You want to clear your booking, don't worry, we've got you",
-        },
-        {
-          btnText: "Check In",
-          title: "Where to Check In",
-          msg: "You want to clear your booking, don't worry, we've got you",
-        },
-        {
-          btnText: "Change Timeline",
-          title: "Swap FLight",
-          msg: "You want to clear your booking, don't worry, we've got you",
-        },
-      ],
+      flights,
       modalShow: false,
       subscribe,
     };
@@ -92,32 +77,21 @@ export default {
 
       <!-- page-section -->
 
-      <div class="section q-mt-lg">
-        <div class="text-h4 q-mb-md">Top Destinations</div>
+      <div class="section q-mt-md q-mb-lg">
+        <div class="text-h5 q-mb-md">Top Destinations</div>
         <div class="subtitle section-space">
           Get to <span>Explore</span> and <span>Find</span> a variety of Places,
           we will take you there.
         </div>
 
-        <div class="row q-gutter-sm">
-          <div class="col-5">
-            <KQCard :flightId="101" />
-          </div>
-          <div class="col-6">
-            <div class="row q-gutter-sm">
-              <div class="col-6">
-                <KQCard :flightId="101" />
-              </div>
-              <div class="col-6">
-                <KQCard :flightId="101" />
-              </div>
-              <div class="col-6">
-                <KQCard :flightId="101" />
-              </div>
-              <div class="col-6">
-                <KQCard :flightId="101" />
-              </div>
-            </div>
+        <div class="row q-gutter-md">
+          <div class="col-3" v-for="(route, index) in flights" :key="index">
+            <KQCard
+              :class_bs="route.packages[0].name"
+              :index="index"
+              :city="route.origin.name"
+              :price="route.packages[0].price"
+            />
           </div>
         </div>
       </div>
