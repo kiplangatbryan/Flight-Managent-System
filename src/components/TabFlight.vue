@@ -11,7 +11,6 @@
                 label="From"
                 outlined
                 flat
-                @input-value="filterOptions"
                 class="bg-white"
                 use-input
                 @filter="filterFromFn"
@@ -32,7 +31,6 @@
                 :options="ToOptions"
                 label="To"
                 outlined
-                @input-value="filterOptions"
                 flat
                 class="bg-white"
                 use-input
@@ -71,7 +69,7 @@
             </div>
             <div class="col-12">
               <q-select
-                v-model="flight_params.class"
+                v-model="flight_params.class_type"
                 :options="classOptions"
                 label="class"
                 outlined
@@ -130,6 +128,7 @@
               class="btn-kq"
               color="primary"
               no-caps
+              @click="searchFlight"
             ></q-btn>
           </div>
         </div>
@@ -144,22 +143,7 @@ import { useAppStore } from "@/stores/main";
 
 export default {
   name: "tabFlight",
-  // watch: {
-  //   flight_params: {
-  //     // make resets
-  //     handler(newValue, oldValue) {
-  //       console.log(newValue.from);
-  //       if (newValue.from !== null) {
-  //         this.filterOptions("to");
-  //       }
-  //       this.filterOptions("from");
 
-  //       console.log(this.FromOptions);
-  //       console.log(this.ToOptions);
-  //     },
-  //     deep: true,
-  //   },
-  // },
   setup() {
     const store = useAppStore();
     var FromOptions = ref([]);
@@ -171,9 +155,12 @@ export default {
       from: null,
       to: null,
       trip_type: null,
+      class_type: null,
     });
 
-    const { destinations } = store;
+    const { destinations, getFlights } = store;
+
+    // find a flight
 
     // watch the state of input change
     const createOptionsFromFLights = () => {
@@ -200,21 +187,21 @@ export default {
       return match[option_type];
     };
 
-    // const filterOptions = (option_type) => {
-    //   const result = indexFilter(option_type);
-    //   console.log(result.value);
-    //   const filteredOptions = result.value.filter((option) => {
-    //     if (option.value == flight_params.value[option_type]) {
-    //       return false;
-    //     }
-    //   });
+    const filterOptions = (option_type) => {
+      const result = indexFilter(option_type);
+      console.log(result.value);
+      const filteredOptions = result.value.filter((option) => {
+        if (option.value == flight_params.value[option_type]) {
+          return false;
+        }
+      });
 
-    //   if (option_type == "to") {
-    //     ToOptions = filteredOptions;
-    //   } else if (option_type == "from") {
-    //     FromOptions = filteredOptions;
-    //   }
-    // };
+      if (option_type == "to") {
+        ToOptions = filteredOptions;
+      } else if (option_type == "from") {
+        FromOptions = filteredOptions;
+      }
+    };
 
     const filterToFn = (val, update) => {
       update(() => {
@@ -249,7 +236,6 @@ export default {
     });
 
     return {
-      filterOptions,
       filterToFn,
       filterFromFn,
       TripOptions: ref([
@@ -269,15 +255,15 @@ export default {
         },
         {
           label: "Economy",
-          value: "economy",
+          value: "Economy",
         },
         {
           label: "Business",
-          value: "business",
+          value: "Business",
         },
         {
           label: "First Class",
-          value: "first_class",
+          value: "First_class",
         },
       ],
       FromOptions,
