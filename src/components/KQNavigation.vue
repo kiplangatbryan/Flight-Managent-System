@@ -27,12 +27,21 @@ export default {
       </nav>
     </main>
 
-    <aside>
-      <q-btn flat @click="searchToggle">
-        <q-icon name="search" />
-      </q-btn>
-
-      <RouterLink to="/language">en</RouterLink>
+    <aside class="row justify-between items-center q-gutter-sm">
+      <div class="col">
+        <q-btn flat @click="searchToggle" class="fix" icon="search"></q-btn>
+      </div>
+      <div class="col">
+        <q-btn
+          class="col"
+          to="/contact-us"
+          label="Talk to us"
+          no-caps
+          glossy
+          color="primary"
+        >
+        </q-btn>
+      </div>
     </aside>
   </header>
 </template>
@@ -50,6 +59,12 @@ header {
   margin-top: 15px;
 }
 
+.fix {
+  margin-top: 14px;
+}
+aside {
+  min-width: 200px;
+}
 aside * {
   color: #fff;
 }

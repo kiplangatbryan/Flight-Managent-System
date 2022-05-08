@@ -1,41 +1,32 @@
 <template>
-  <div class="card__main shadow-2">
+  <div class="card__main shadow-1">
     <div class="card-img-cont">
-      <img :src="imgUrl" />
+      <img :src="imageFunc(index + 1)" />
     </div>
     <div class="card_body">
       <div class="text-h5 q-mb-sm">
         {{ city }}
       </div>
 
-      <div class="subtitle-text">Economy from</div>
+      <div class="subtitle-text">{{ class_bs }} from</div>
       <div class="row items-start text-bold">
         <div class="currency">KES</div>
-        <div class="text-h5 q-ml-sm">308,400</div>
+        <div class="text-h5 q-ml-sm">{{ price }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// import { ref } from "vue";
-// import { useAppStore } from "@/stores/main";
-// import { storeToRefs } from "pinia";
-
 export default {
   components: {},
-  defineProps: {
-    flightId: {
-      type: String,
-      required: true,
-    },
-  },
+  props: ["class_bs", "city", "price", "index"],
   setup() {
+    const imageFunc = (index) => {
+      return `src/assets/png-${index}.jpg`;
+    };
     return {
-      imgUrl: "src/assets/png-2.jpg",
-      country: "kenya",
-      city: "Nairobi",
-      msg: "The Hallow Ruins Of Tangor",
+      imageFunc,
     };
   },
 };
@@ -46,9 +37,10 @@ export default {
   position: relative;
   border-radius: 4px;
   overflow: hidden;
+  width: fit-content;
 }
 .currency {
-  font-size: 14px;
+  font-size: 12px;
   margin-top: 3px;
 }
 
