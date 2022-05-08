@@ -5,51 +5,35 @@ export const useAppStore = defineStore({
   state: () => ({
     searchShow: false,
     bookingState: false,
-    seats: [
+    booking: { passengers: 1, },
+    destinations: [
+      { name: "Nairobi", country: 'Kenya', alias: "NBO" },
+      { name: "seatle", country: 'United States', alias: "SEA" },
+      { name: "Moscow", country: 'Russia', alias: "RU" },
+      { name: "Mombasa", country: 'Kenya', alias: "KE" },
+      { name: "Eldoret", country: "Kenya", alias: "KE" },
+      { name: "Mogadishu", country: "Somalia", alias: "SOM" },
+      { name: "Sydney", country: "Australia", alias: "AUS" },
+    ],
+    flights: [
       {
-        seatId: "A01",
-        occupied: false,
+        origin: { name: "Nairobi", country: 'Kenya', alias: "NBO" },
+        destination: { name: "seatle", country: 'United States', alias: "SEA" },
+        packages: [{ name: 'Economy', price: '362, 510' }, { name: 'Business', price: '485, 150' },],
+        stops: 1,
       },
       {
-        seatId: "A02",
-        occupied: false,
+        origin: { name: "Moscow", country: 'Russia', alias: "RU" },
+        destination: { name: "Eldoret", country: "Kenya", alias: "KE" },
+        packages: [{ name: 'Economy', price: '362, 510' }, { name: 'Business', price: '485, 150' },],
+
+        stops: 1,
       },
       {
-        seatId: "A03",
-        occupied: false,
-      },
-      {
-        seatId: "A04",
-        occupied: false,
-      },
-      {
-        seatId: "A05",
-        occupied: false,
-      },
-      {
-        seatId: "A06",
-        occupied: false,
-      },
-      {
-        seatId: "A07",
-        occupied: false,
-      },
-      {
-        seatId: "A08",
-        occupied: false,
-      },
-      {
-        seatId: "A09",
-        occupied: false,
-      }, {
-        seatId: "A10",
-        occupied: false,
-      }, {
-        seatId: "A11",
-        occupied: false,
-      }, {
-        seatId: "A12",
-        occupied: false,
+        origin: { name: "Mombasa", country: 'Kenya', alias: "KE" },
+        destination: { name: "Mogadishu", country: "Somalia", alias: "SOM" },
+        packages: [{ name: 'Economy', price: '362, 510' }, { name: 'Business', price: '485, 150' },],
+        stops: 1,
       },
     ],
   }),
@@ -60,6 +44,6 @@ export const useAppStore = defineStore({
     searchToggle() {
       if (this.searchShow) this.searchShow = false
       else this.searchShow = true
-    }
+    },
   }
 })
