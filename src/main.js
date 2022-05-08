@@ -25,7 +25,7 @@ myApp.use(createPinia())
 myApp.use(router)
 myApp.use(Quasar, {
   plugins: {
-    Dialog
+    Dialog,
   }, // import Quasar plugins and add here
   /*
   config: {

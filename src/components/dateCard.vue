@@ -1,5 +1,5 @@
 <template>
-  <div class="shadow-1 bg-grey-1 custom-card" :class="{ active: active }">
+  <div class="shadow-1 bg-grey-3 custom-card" :class="{ active: active }">
     <div class="text-h6 b-title">{{ date }}</div>
     <div class="subtitle-text3 b-text" v-if="!btn">from {{ currency }}</div>
     <div class="subtitle-text3 b-text" v-if="btn">next</div>
@@ -28,11 +28,20 @@ export default {
   transition: all 0.3s ease-in-out;
   padding: 0.5em 0.5em;
   min-width: 80px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
-.active {
+
+.custom-card:hover {
+  transform: scale(1.1);
+  background: #fff !important;
   border: 0.25px solid var(--main-accent-color);
-  background: #fff;
-  transform: scaleY(1.2);
+}
+
+.active {
+  border: 0.25px solid #000;
+  background: #fff !important;
+  transform: scale(1.1);
 }
 .b-text {
   font-size: 14px !important;
