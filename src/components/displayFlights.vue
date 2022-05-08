@@ -1,17 +1,22 @@
 <script>
 import ThemeCard from "@/components/dateCard.vue";
-import FlightPackages from "@/components/packages.vue";
+import Flight from "@/components/flight.vue";
 
 import { onMounted, ref } from "vue";
 import moment from "moment";
+import { useAppStore } from "@/stores/main";
+
 export default {
   name: "FlightSelect",
   components: {
     ThemeCard,
-    FlightPackages,
+    Flight,
   },
   setup() {
     const dateCards = ref([]);
+    const store = useAppStore();
+
+    const { flights } = store;
     const nextBtn = {
       price: "7 days",
       currency: "7 days",
@@ -23,13 +28,18 @@ export default {
     const generateDatesAroundTD = function (chosenDate) {
       var momObject = moment(chosenDate).subtract(3, "days");
       for (let i = 0; i < 7; i++) {
+        let stateActive = false;
+
         let datePrefix = moment(momObject)
           .add(i, "days")
           .format("LLLL")
           .split(",");
+        // selected date
+        if (i == 3) stateActive = true;
+
         dateCards.value.push({
           currency: "KES",
-          active: false,
+          active: stateActive,
           btn: false,
           date: `${datePrefix[0].slice(0, 3)} ${datePrefix[1].split(" ")[2]}`,
           price: "462,910",
@@ -37,11 +47,11 @@ export default {
       }
     };
 
-
     return {
       dateCards,
       nextBtn,
-      today: moment().format('LLLL')
+      today: moment().format("LLLL"),
+      flights,
     };
   },
 };
@@ -55,7 +65,7 @@ export default {
         SEATTLE (SA) - NAIROBI (KE) [One way]
       </div>
     </q-card-section>
-    <q-card-section> {{today }} </q-card-section>
+    <q-card-section> {{ today }} </q-card-section>
     <q-card-section>
       <!-- date selection -->
       <div class="row no-wrap">
@@ -78,7 +88,12 @@ export default {
       </div>
     </q-card-section>
     <q-card-section>
-      <FlightPackages />
+      <div class="text-h5 q-mb-md">Select Your Prefered flight</div>
+      <Flight
+        v-for="(flight, index) in flights"
+        :flight="flight"
+        :key="index"
+      />
     </q-card-section>
   </q-card>
 </template>
