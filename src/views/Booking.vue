@@ -44,15 +44,19 @@ export default {
             class="shadow-0"
             v-model="step"
             horizontal
+            header-nav
+            keep-alive
             color="primary"
-            animated
+            flat
+            active-color="primary"
             swipeable
             done-color="yellow"
           >
             <q-step
               :name="1"
-              title="Choose Flight"
+              title="Flights"
               class="adjust-step"
+              subtitle="Choose the type and time of flight"
               icon="flight"
               :done="step > 1"
             >
@@ -63,7 +67,12 @@ export default {
               </q-stepper-navigation>
             </q-step>
 
-            <q-step :name="2" title="Passengers" icon="people">
+            <q-step
+              :name="2"
+              title="Passengers"
+              icon="people"
+              subtitle="Enter your information"
+            >
               <q-card flat bordered class="q-my-lg">
                 <q-card-section>
                   <div class="text-h5 q-mb-none">
@@ -90,7 +99,13 @@ export default {
               </q-stepper-navigation>
             </q-step>
 
-            <q-step :name="3" title="Payment" icon="seat" class="adjust-step">
+            <q-step
+              :name="3"
+              title="Payment"
+              icon="seat"
+              class="adjust-step"
+              subtitle="Make payment for your flight"
+            >
               <paymentOptions />
               <q-stepper-navigation>
                 <q-btn @click="step = 3" color="primary" label="Continue" />
