@@ -19,7 +19,8 @@
       </q-tabs>
       <q-tab-panels
         v-model="tab"
-        animated
+        keep-alive
+        vertical
         transition-prev="fade"
         transition-next="fade"
       >

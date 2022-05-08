@@ -1,185 +1,203 @@
 <template>
   <main>
-    <q-card flat bordered>
-      <div class="row">
-        <div class="col">
-          <q-list padding class="border_tink">
-            <q-item>
-              <q-item-section>
-                <q-item-label>FROM</q-item-label>
-                <q-item-label title>
-                  <q-select
-                    dense
-                    v-model="flight_params.from"
-                    :options="FromOptions"
-                    label="Where are You From?"
-                    color="teal"
-                    outlined
-                    clearable
-                    class="bg-white"
-                    options-selected-class="text-deep-orange"
-                  >
-                    <template v-slot:option="scope">
-                      <q-item v-bind="scope.itemProps">
-                        <q-item-section>
-                          <q-item-label>{{ scope.opt.label }}</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </template>
-                  </q-select>
-                </q-item-label>
+    <q-card flat>
+      <q-card-section>
+        <div class="row q-gutter-md">
+          <div class="col-3 row">
+            <div class="col-12">
+              <q-select
+                v-model="flight_params.from"
+                :options="FromOptions"
+                label="From"
+                outlined
+                flat
+                @change="filterOptions('from')"
+                class="bg-white"
+                filter
+              >
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q-item-label>{{ scope.opt.label }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+            <div class="col-12">
+              <q-select
+                v-model="flight_params.to"
+                :options="ToOptions"
+                label="To"
+                outlined
+                filter
+                @change="filterOptions('to')"
+                flat
+                class="bg-white"
+              >
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q-item-label>{{ scope.opt.label }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+          </div>
 
-                <q-item-label caption> Nairobi, London, Egypt </q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
+          <div class="col-3 row">
+            <div class="col-12">
+              <q-select
+                v-model="flight_params.trip_type"
+                :options="TripOptions"
+                label="Trip"
+                outlined
+                flat
+                class="bg-white"
+              >
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q-item-label>{{ scope.opt.label }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+            <div class="col-12">
+              <q-select
+                v-model="flight_params.class"
+                :options="classOptions"
+                label="class"
+                outlined
+                flat
+                class="bg-white"
+              >
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q-item-label>{{ scope.opt.label }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+          </div>
+
+          <div class="col-3 row">
+            <div class="col-12">
+              <q-input
+                v-model="flight_params.departure"
+                type="date"
+                label="Departure"
+                bg-color="white"
+                lazy-rules
+                stack-label
+                outlined
+                :rules="[
+                  (val) => (val && val.length > 0) || 'Enter a departure date',
+                ]"
+              >
+              </q-input>
+            </div>
+
+            <div class="col-12">
+              <q-input
+                v-model="flight_params.arrival"
+                type="date"
+                label="Arrival"
+                bg-color="white"
+                lazy-rules
+                stack-label
+                outlined
+                :rules="[
+                  (val) => (val && val.length > 0) || 'Enter a arrival date',
+                ]"
+              >
+              </q-input>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <q-btn
+              label="Find Flight"
+              icon="fly"
+              class="btn-kq"
+              color="primary"
+              no-caps
+            ></q-btn>
+          </div>
         </div>
-        <div class="col">
-          <q-list padding class="border_tink">
-            <q-item>
-              <q-item-section>
-                <q-item-label>TO</q-item-label>
-                <q-item-label title>
-                  <q-select
-                    dense
-                    outlined
-                    v-model="flight_params.from"
-                    :options="ToOptions"
-                    label="Headed Here"
-                    color="teal"
-                    clearable
-                    options-selected-class="text-deep-orange"
-                  >
-                    <template v-slot:option="scope">
-                      <q-item v-bind="scope.itemProps">
-                        <q-item-section>
-                          <q-item-label>{{ scope.opt.label }}</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </template>
-                  </q-select>
-                </q-item-label>
-                <q-item-label caption> New York, Australia </q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </div>
-        <!-- type of trip -->
-        <div class="col-md">
-          <q-list padding class="border_tink">
-            <q-item>
-              <q-item-section>
-                <q-item-label>Trip</q-item-label>
-                <q-item-label title>
-                  <q-select
-                    dense
-                    outlined
-                    v-model="flight_params.trip_type"
-                    :options="TripOptions"
-                    label="Headed Here"
-                    color="teal"
-                    clearable
-                    options-selected-class="text-deep-orange"
-                  >
-                    <template v-slot:option="scope">
-                      <q-item v-bind="scope.itemProps">
-                        <q-item-section>
-                          <q-item-label>{{ scope.opt.label }}</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </template>
-                  </q-select>
-                </q-item-label>
-                <q-item-label caption> New York, Australia </q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </div>
-        <!-- date select -->
-        <div class="col">
-          <q-list padding class="border_tink">
-            <q-item>
-              <q-item-section>
-                <q-item-label>Departure</q-item-label>
-                <q-item-label title>
-                  <q-select
-                    dense
-                    outlined
-                    v-model="flight_params.departure"
-                    :options="DepartOptions"
-                    label="Headed Here"
-                    color="teal"
-                    clearable
-                    options-selected-class="text-deep-orange"
-                  >
-                    <template v-slot:option="scope">
-                      <q-item v-bind="scope.itemProps">
-                        <q-item-section>
-                          <q-item-label>{{ scope.opt.label }}</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </template>
-                  </q-select>
-                </q-item-label>
-                <q-item-label caption> New York, Australia </q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </div>
-        <div class="col">
-          <q-list padding class="border_tink">
-            <q-item>
-              <q-item-section>
-                <q-item-label>Arrival</q-item-label>
-                <q-item-label title>
-                  <q-select
-                    dense
-                    outlined
-                    v-model="flight_params.arrival"
-                    :options="options"
-                    label="Headed Here"
-                    color="teal"
-                    clearable
-                    options-selected-class="text-deep-orange"
-                  >
-                    <template v-slot:option="scope">
-                      <q-item v-bind="scope.itemProps">
-                        <q-item-section>
-                          <q-item-label>{{ scope.opt.label }}</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </template>
-                  </q-select>
-                </q-item-label>
-                <q-item-label caption> New York, Australia </q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </div>
-      </div>
+      </q-card-section>
     </q-card>
-    <div class="row items-end">
-      <div class="col-4">
-        <q-btn
-          to="/explore"
-          color="dark"
-          style="font-size: 20px"
-          no-caps
-          outline
-          label="Search Flight"
-        />
-      </div>
-    </div>
   </main>
 </template>
 
 <script>
 import { ref, onMounted } from "vue";
+import { useAppStore } from "@/stores/main";
 
 export default {
   setup() {
-    onMounted(() => {
-      console.log("mounted");
+    const store = useAppStore();
+    var FromOptions = ref([]);
+    var ToOptions = ref([]);
+    var allDestinations = null;
+    var flight_params = ref({
+        arrival: null,
+        departure: null,
+        from: null,
+        to: null,
+        trip_type: null,
+      }),
+
+    const { destinations } = store;
+
+    const createOptionsFromFLights = () => {
+      // all flights
+      allDestinations = destinations.map((destination) => {
+        return {
+          value: destination.name + "_" + destination.alias,
+          label: destination.name,
+        };
+      });
+
+      FromOptions.value = ToOptions.value = allDestinations;
+    };
+
+    const indexFilter = function (option_type) {
+      /**
+       * @param options_type
+       * @description return object containing array associated with option
+       */
+      const match = {
+        to: ToOptions,
+        from: FromOptions,
+      };
+      return match[option_type];
+    };
+
+    const filterOptions = function (option_type) {
+      const result = indexFilter(option_type);
+      const filteredOptions = result.value.filter((option) => {
+        if (option.value == flight_params.value[option_type]) {
+          return false;
+        }
+      });
+
+      if (option_type == 'to') {
+        ToOptions = filteredOptions
+      }
+       else if(option_type == 'from'){
+        FromOptions = filteredOptions
+      }
+
+    };
+
+    onMounted(async () => {
+      // create options
+      createOptionsFromFLights();
     });
 
     return {
@@ -192,64 +210,28 @@ export default {
           label: "One Way",
           value: "direct",
         },
-        {
-          label: "Multi City",
-          value: "city",
-        },
       ]),
-      flight_params: ref({
-        arrival: null,
-        departure: null,
-        from: null,
-        to: null,
-        trip_type: null,
-      }),
-
-      FromOptions: [
+      classOptions: [
         {
-          label: "Nairobi, Kenya",
-          value: "Nairobi_KE",
+          label: "Any",
+          value: "all",
         },
         {
-          label: "New York, USA",
-          value: "Newyork_USA",
+          label: "Economy",
+          value: "economy",
         },
         {
-          label: "Cape Town, South Africa",
-          value: "capetown_SA",
+          label: "Business",
+          value: "business",
         },
         {
-          label: "Lagos, Nigeria",
-          value: "lagos",
-        },
-        {
-          label: "Tunis, Tunisia",
-          value: "tunis",
+          label: "First Class",
+          value: "first_class",
         },
       ],
-
-      ToOptions: [
-        {
-          label: "Nairobi, Kenya",
-          value: "Nairobi_KE",
-        },
-        {
-          label: "New York, USA",
-          value: "Newyork_USA",
-        },
-        {
-          label: "Cape Town, South Africa",
-          value: "capetown_SA",
-        },
-        {
-          label: "Lagos, Nigeria",
-          value: "lagos",
-        },
-        {
-          label: "Tunis, Tunisia",
-          value: "tunis",
-        },
-      ],
+      FromOptions,
+      ToOptions,
+     flight_params
     };
   },
 };
@@ -262,5 +244,8 @@ export default {
 }
 .border_tink {
   border-radius: 4px;
+}
+.btn-kq {
+  font-size: 19px;
 }
 </style>
