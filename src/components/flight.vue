@@ -1,13 +1,37 @@
 <script>
 import flightPackage from "@/components/package.vue";
+import FlightMode from "@/components/packageType.vue";
+import { ref, onMounted } from "vue";
+import moment from "moment";
+import { useAppStore } from "@/stores/main";
+import { storeToRefs } from "pinia";
 
 export default {
   components: {
     package: flightPackage,
+    FlightMode,
   },
   props: ["flight"],
-  setup() {
-    return {};
+  setup(props) {
+    const store = useAppStore();
+    const { changeActivePackage } = store;
+    const { activePackage } = storeToRefs(store);
+
+    const selectPackage = (offerOb) => {
+      let data = {
+        id: props.flight.id,
+        data: offerOb,
+      };
+      changeActivePackage(data);
+    };
+
+    return {
+      formatTime(time_data) {
+        return moment(time_data).format("LLLL");
+      },
+      selectPackage,
+      activePackage,
+    };
   },
 };
 </script>
@@ -17,8 +41,10 @@ export default {
     <div class="row q-pa-md items-between">
       <div class="col-5 row items-between no-wrap">
         <div class="col-4 from">
-          <div class="text-h6 fix-title">1845 {{ flight.origin.alias }}</div>
-          <div class="subtitle-text3">{{ flight.origin.name }}</div>
+          <div class="text-h6 fix-title">
+            {{ flight.from.alias }}
+          </div>
+          <div class="subtitle-text3">{{ flight.from.name }}</div>
         </div>
         <div class="col-4 timeline text-center">
           <q-icon name="flight" size="14px" class="change_angle" />
@@ -27,21 +53,31 @@ export default {
         </div>
         <div class="col-4 text-right to">
           <div class="text-h6 fix-title">
-            2345 {{ flight.destination.alias }}
+            {{ flight.to.alias }}
           </div>
-          <div class="subtitle-text3">{{ flight.destination.name }}</div>
+          <div class="subtitle-text3">{{ flight.to.name }}</div>
         </div>
       </div>
       <!-- offers here -->
       <div class="col-7 row justify-end q-pl-md">
         <package
           class="q-mr-sm"
+          @chosen-package="selectPackage"
           v-for="(offer, index) in flight.packages"
           :offer="offer"
           :key="index"
         />
       </div>
     </div>
+    <q-card-section v-if="activePackage.id == flight.id">
+      <div class="row items-center">
+        <FlightMode
+          :class_type="activePackage.data.name"
+          :price="activePackage.data.price"
+          :seats="7"
+        />
+      </div>
+    </q-card-section>
   </q-card>
 </template>
 
@@ -54,6 +90,10 @@ export default {
 }
 .change_angle {
   transform: rotate(90deg);
+}
+.fix-font {
+  font-size: 14px;
+  margin-bottom: -15px;
 }
 
 .timeline {

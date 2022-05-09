@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia'
-import moment from "moment";
 
 export const useAppStore = defineStore({
   id: 'main',
   state: () => ({
     searchShow: false,
     bookingState: false,
+    intermediate: { data: [] },
+    pageState: true,
+    fetched: false,
+    activePackage: {},
     booking: { passengers: 1, },
     destinations: [
       { name: "Nairobi", country: 'Kenya', alias: "NBO" },
@@ -18,6 +21,7 @@ export const useAppStore = defineStore({
     ],
     routes: [
       {
+        id: 1,
         depart: new Date(Date.now() + 1 * 60 * 60 * 1000),
         from: { name: "Nairobi", country: 'Kenya', alias: "NBO" },
         to: { name: "Seatle", country: 'United States', alias: "SEA" },
@@ -25,6 +29,7 @@ export const useAppStore = defineStore({
         stops: 1,
       },
       {
+        id: 2,
         depart: new Date(Date.now() + 3 * 60 * 60 * 1000),
         from: { name: "Mombasa", country: 'Kenya', alias: "KE" },
         to: { name: "Seatle", country: 'United States', alias: "SEA" },
@@ -32,6 +37,7 @@ export const useAppStore = defineStore({
         stops: 1,
       },
       {
+        id: 3,
         depart: new Date(Date.now() + 8 * 60 * 60 * 1000),
         from: { name: "Mombasa", country: 'Kenya', alias: "KE" },
         to: { name: "Nairobi", country: 'Kenya', alias: "NBO" },
@@ -39,6 +45,7 @@ export const useAppStore = defineStore({
         stops: 1,
       },
       {
+        id: 4,
         depart: new Date(Date.now() + 2 * 60 * 60 * 1000),
         from: { name: "Mogadishu", country: "Somalia", alias: "SOM" },
         to: { name: "Sydney", country: "Australia", alias: "AUS" },
@@ -46,77 +53,92 @@ export const useAppStore = defineStore({
         stops: 1,
       },
       {
+        id: 5,
         depart: new Date(Date.now() + 5 * 60 * 60 * 1000),
         from: { name: "Eldoret", country: "Kenya", alias: "KE" },
         to: { name: "Moscow", country: 'Russia', alias: "RU" },
         packages: [{ name: 'Economy', price: '232,550' }, { name: 'Business', price: '385,450' },],
         stops: 1,
+      },
+      {
+        id: 6,
+        depart: new Date(Date.now() + 4 * 60 * 60 * 1000),
+        from: { name: "Eldoret", country: "Kenya", alias: "KE" },
+        to: { name: "Moscow", country: 'Russia', alias: "RU" },
+        packages: [{ name: 'Economy', price: '232,550' }, { name: 'Business', price: '385,450' },],
+        stops: 1,
+      },
+      {
+        id: 7,
+        depart: new Date(Date.now() + 2 * 60 * 60 * 1000),
+        from: { name: "Mogadishu", country: "Somalia", alias: "SOM" },
+        to: { name: "Sydney", country: "Australia", alias: "AUS" },
+        packages: [{ name: 'Economy', price: '462,510' }, { name: 'Business', price: '585,150' },],
+        stops: 1,
       }
     ],
-    flights: [
-      {
-        origin: { name: "Nairobi", country: 'Kenya', alias: "NBO" },
-        destination: { name: "seatle", country: 'United States', alias: "SEA" },
-        packages: [{ name: 'Economy', price: '362, 510' }, { name: 'Business', price: '485, 150' },],
-        stops: 1,
-      },
-      {
-        origin: { name: "Moscow", country: 'Russia', alias: "RU" },
-        destination: { name: "Eldoret", country: "Kenya", alias: "KE" },
-        packages: [{ name: 'Economy', price: '362, 510' }, { name: 'Business', price: '485, 150' },],
 
-        stops: 1,
-      },
-      {
-        origin: { name: "Mombasa", country: 'Kenya', alias: "KE" },
-        destination: { name: "Mogadishu", country: "Somalia", alias: "SOM" },
-        packages: [{ name: 'Economy', price: '362, 510' }, { name: 'Business', price: '485, 150' },],
-        stops: 1,
-      },
-    ],
   }),
-  getters: {
-    doubleCount: (state) => state.counter * 2
-  },
   actions: {
     searchToggle() {
       if (this.searchShow) this.searchShow = false
       else this.searchShow = true
     },
+    updateFetch() {
+      if (this.fetched) this.fetched = false
+      else this.fetched = true
+    },
+    changeActivePackage(data) {
+      this.activePackage = data
+    },
+    updatePageState() {
+      if (this.pageState) this.pageState = false
+      else this.pageState = true
+    },
     async getFlights() {
       return new Promise((resolve, reject) => {
-        setTimeout(function () {
+        setTimeout(() => {
           resolve(this.routes)
         }, 500)
       })
     },
 
     async searchFlight({ from, to, departure, class_type }) {
-      const flights = await getFlights()
+      var flights = await this.getFlights()
 
-      const formatKey = function (obj) {
+      const formatKey = (obj) => {
         return obj.name + "_" + obj.alias
       }
 
       const compareDate = (depart) => {
-        if (new Date(depart) > new Date(departure)) return true
-
+        if (new Date(departure) > new Date(depart)) return true
         return false
       }
 
       const findClass = (packages) => {
-        if (class_type == 'all') return true
 
-        return packages.includes(class_type)
+        if (class_type.value == 'all') return true
+        const result = packages.find((el) => {
+          if (el.name == class_type.value) {
+            return true
+          }
+        })
+        return result
 
       }
-      const result = flights.find((el) => {
-        if (formatKey(el.from) == from && formatKey(el.to) == to && findClass(el.packages) && compareDate(departure)) {
+      const result = flights.filter((el) => {
+        if (formatKey(el.from) == from.value && formatKey(el.to) == to.value && findClass(el.packages) && compareDate(el.depart)) {
           return true
         }
       })
 
-      if (result == undefined) return false
+      if (result.length == 0) return false
+
+      this.intermediate['data'] = result
+      this.intermediate['class_type'] = class_type.value
+
+      console.log(result)
+
       return true
     }
   }
