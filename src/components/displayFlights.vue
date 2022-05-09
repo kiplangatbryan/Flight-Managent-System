@@ -1,101 +1,76 @@
 <script>
-import ThemeCard from "@/components/dateCard.vue";
 import Flight from "@/components/flight.vue";
 
 import { onMounted, ref } from "vue";
 import moment from "moment";
 import { useAppStore } from "@/stores/main";
+import { useRoute } from "vue-router";
+import { storeToRefs } from "pinia";
 
 export default {
   name: "FlightSelect",
   components: {
-    ThemeCard,
     Flight,
   },
+  watch: {
+    fetched(newValue, oldValue) {
+      console.log("change detected");
+      this.populateUsingId();
+    },
+  },
   setup() {
-    const dateCards = ref([]);
     const store = useAppStore();
+    var flights = ref([]);
+    var flights_to_from = ref({});
 
-    const { flights } = store;
-    const nextBtn = {
-      price: "7 days",
-      currency: "7 days",
-      active: false,
-      btn: true,
-      date: "+7",
-    };
-    onMounted(() => generateDatesAroundTD(Date.now()));
-    const generateDatesAroundTD = function (chosenDate) {
-      var momObject = moment(chosenDate).subtract(3, "days");
-      for (let i = 0; i < 7; i++) {
-        let stateActive = false;
+    const { intermediate } = store;
+    const { pageState, fetched } = storeToRefs(store);
 
-        let datePrefix = moment(momObject)
-          .add(i, "days")
-          .format("LLLL")
-          .split(",");
-        // selected date
-        if (i == 3) stateActive = true;
+    // create a fligts list
 
-        dateCards.value.push({
-          currency: "KES",
-          active: stateActive,
-          btn: false,
-          date: `${datePrefix[0].slice(0, 3)} ${datePrefix[1].split(" ")[2]}`,
-          price: "462,910",
-        });
+    const populateUsingId = () => {
+      // differerent kind of work
+      if (intermediate.data.length == 0) {
+        return false;
       }
+      flights.value = intermediate["data"];
+      flights_to_from.value["to"] = flights.value[0].to.name;
+      flights_to_from.value["from"] = flights.value[0].from.name;
+      return true;
     };
+
+    onMounted(() => {
+      populateUsingId();
+    });
 
     return {
-      dateCards,
-      nextBtn,
+      populateUsingId,
+      fetched,
       today: moment().format("LLLL"),
       flights,
+      pageState,
+      flights_to_from,
     };
   },
 };
 </script>
 
 <template>
-  <q-card bordered flat>
-    <q-card-section>
-      <div class="text-h5">Select Departure Flight</div>
-      <div class="text-bold fix-font">
-        SEATTLE (SA) - NAIROBI (KE) [One way]
-      </div>
-    </q-card-section>
-    <q-card-section> {{ today }} </q-card-section>
-    <q-card-section>
-      <!-- date selection -->
-      <div class="row no-wrap">
-        <ThemeCard
-          v-for="(tag, index) in dateCards"
+  <div class="main-bg">
+    <q-card borderless flat>
+      <q-card-section v-if="pageState"> </q-card-section>
+      <q-card-section>
+        <div class="text-h5 q-mb-md" v-if="!pageState">
+          Select Your Preferred flight
+        </div>
+        <Flight
+          v-for="(flight, index) in flights"
+          :flight="flight"
           :key="index"
-          :currency="tag.currency"
-          :active="tag.active"
-          :price="tag.price"
-          :btn="tag.btn"
-          :date="tag.date"
         />
-        <ThemeCard
-          :currency="nextBtn.currency"
-          :active="nextBtn.active"
-          :price="nextBtn.price"
-          :btn="nextBtn.btn"
-          :date="nextBtn.date"
-        />
-      </div>
-    </q-card-section>
-    <q-card-section>
-      <div class="text-h5 q-mb-md">Select Your Prefered flight</div>
-      <Flight
-        v-for="(flight, index) in flights"
-        :flight="flight"
-        :key="index"
-      />
-    </q-card-section>
-  </q-card>
+      </q-card-section>
+    </q-card>
+  </div>
 </template>
 
 <style lang="css" scoped>

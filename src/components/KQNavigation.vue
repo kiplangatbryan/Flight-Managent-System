@@ -21,7 +21,7 @@ export default {
       <main class="logo-text text-white q-mr-lg">Kenya <b>Airways</b></main>
       <nav>
         <RouterLink to="/">Book Flight</RouterLink>
-        <RouterLink to="/make-a-booking">Manage Booking</RouterLink>
+        <RouterLink to="/make-a-booking">Booking</RouterLink>
         <RouterLink to="/support">Guest Support</RouterLink>
         <RouterLink to="/about-us">About Us</RouterLink>
       </nav>
