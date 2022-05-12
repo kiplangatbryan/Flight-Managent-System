@@ -14,14 +14,22 @@ export default {
   props: ["flight"],
   setup(props) {
     const store = useAppStore();
-    const { changeActivePackage } = store;
-    const { activePackage } = storeToRefs(store);
+    const { changeActivePackage, AddBookingInfo, toggleSummary } = store;
+    const { activePackage, booking } = storeToRefs(store);
 
     const selectPackage = (offerOb) => {
       let data = {
         id: props.flight.id,
         data: offerOb,
       };
+
+      let flightData = {
+        ...booking.value,
+        flightInfo: { id: props.flight.id, class_type: offerOb.name },
+      };
+
+      AddBookingInfo(flightData);
+      setTimeout(() => toggleSummary(true), 1);
       changeActivePackage(data);
     };
 
@@ -71,11 +79,19 @@ export default {
     </div>
     <q-card-section v-if="activePackage.id == flight.id">
       <div class="row items-center">
-        <FlightMode
-          :class_type="activePackage.data.name"
-          :price="activePackage.data.price"
-          :seats="7"
-        />
+        <Transition
+          appear
+          enter-active-class="animate__animated animate__fadeLeft"
+          leave-
+          active-class="animate__animated animate__fadeLeft"
+          mode="out-in"
+        >
+          <FlightMode
+            :class_type="activePackage.data.name"
+            :price="activePackage.data.price"
+            :seats="7"
+          />
+        </Transition>
       </div>
     </q-card-section>
   </q-card>

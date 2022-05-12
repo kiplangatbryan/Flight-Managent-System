@@ -1,7 +1,26 @@
 <script>
+import { ref } from "vue";
 export default {
   props: ["class_type", "price", "seats"],
-  setup() {},
+  watch: {
+    check(newVal, oldVal) {
+      this.updateState();
+    },
+  },
+  setup() {
+    var select = ref("select");
+    var checked = ref("selected");
+    const check = ref("");
+
+    const updateState = () => (select.value = checked.value);
+
+    return {
+      select,
+      checked,
+      check,
+      updateState,
+    };
+  },
 };
 </script>
 
@@ -9,6 +28,13 @@ export default {
   <q-card bordered flat class="custom-box">
     <q-item-section class="bg-grey-3 q-py-md">
       <div class="text-center domain">
+        <q-radio
+          v-model="check"
+          checked-icon="task_alt"
+          unchecked-icon="panorama_fish_eye"
+          :val="checked"
+          :label="select"
+        />
         <div class="text-small">KES</div>
         <div class="text-h6">{{ price }}</div>
         <div class="package-title">{{ class_type }} flex</div>

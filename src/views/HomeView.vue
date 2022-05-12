@@ -3,7 +3,6 @@ import KQNavigation from "@/components/KQNavigation.vue";
 import FlightSelectCard from "@/components/flightSelectCard.vue";
 import TabFlight from "@/components/TabFlight.vue";
 import TabCheckIn from "@/components/TabCheckIn.vue";
-import KQSearch from "@/components/KQSearch.vue";
 import FooterKQ from "@/components/FooterKQ.vue";
 import KQCard from "@/components/KQCard.vue";
 
@@ -17,7 +16,6 @@ export default {
     FlightSelectCard,
     TabFlight,
     TabCheckIn,
-    KQSearch,
     FooterKQ,
     KQCard,
   },
@@ -73,7 +71,6 @@ export default {
           </template>
         </FlightSelectCard>
       </div>
-      <KQSearch />
 
       <!-- page-section -->
 

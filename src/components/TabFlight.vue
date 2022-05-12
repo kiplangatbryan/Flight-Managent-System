@@ -128,7 +128,7 @@
               class="btn-kq"
               color="primary"
               no-caps
-              @click="searchFlight"
+              @click="searchForFlight"
             ></q-btn>
           </div>
         </div>
@@ -140,6 +140,9 @@
 <script>
 import { ref, onMounted, watch } from "vue";
 import { useAppStore } from "@/stores/main";
+import { QSpinnerCube, useQuasar } from "quasar";
+import { useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
 
 export default {
   name: "tabFlight",
@@ -158,14 +161,44 @@ export default {
       class_type: null,
     });
 
-    const { destinations, getFlights } = store;
+    const { searchFlight, updatePageState } = store;
+    const { destinations } = storeToRefs(store);
+    const router = useRouter();
 
-    // find a flight
+    const qua = useQuasar();
+
+    const searchForFlight = async () => {
+      qua.loading.show({
+        message: "We are searching for your flight",
+        messageColor: "black",
+        spinnerColor: "red",
+        spinner: QSpinnerCube,
+      });
+      const q = await searchFlight(flight_params.value);
+      if (!q) {
+        // show alert box
+        alert("flight no found!");
+        qua.loading.hide();
+
+        return;
+      }
+      updatePageState();
+
+      qua.loading.hide();
+
+      router.push({
+        name: "booking",
+
+        query: {
+          redirect: "true",
+        },
+      });
+    };
 
     // watch the state of input change
     const createOptionsFromFLights = () => {
       // all flights
-      allDestinations = destinations.map((destination) => {
+      allDestinations = destinations.value.map((destination) => {
         return {
           value: destination.name + "_" + destination.alias,
           label: destination.name,
@@ -209,7 +242,6 @@ export default {
           // do nothing
         } else {
           const flightvalue = val.toLowerCase();
-          console.log(flightvalue);
           ToOptions.value = ToOptions.value.filter(
             (v) => v.label.toLowerCase().indexOf(flightvalue) > -1
           );
@@ -236,6 +268,7 @@ export default {
     });
 
     return {
+      searchForFlight,
       filterToFn,
       filterFromFn,
       TripOptions: ref([

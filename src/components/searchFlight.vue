@@ -177,7 +177,7 @@ export default {
     const store = useAppStore();
     const qua = useQuasar();
 
-    const { searchFlight, updateFetch } = store;
+    const { searchFlight, updateFetch, searchToggle, toggleStep } = store;
 
     const { destinations } = storeToRefs(store);
 
@@ -192,13 +192,16 @@ export default {
       const q = await searchFlight(flight_params.value);
       if (!q) {
         // show alert box
-        alert("flight no found!");
         qua.loading.hide();
 
         return;
       }
 
-      updateFetch();
+      setTimeout(() => {
+        updateFetch();
+        searchToggle(false);
+      }, 1);
+      toggleStep(true);
 
       qua.loading.hide();
     };

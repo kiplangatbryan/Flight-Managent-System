@@ -2,104 +2,106 @@
   <div class="parent">
     <q-card bordered flat>
       <div v-for="index in booking.passengers" :key="index">
-      <q-card-section >
-        <form @submit.prevent="validate">
-          <div class="text-h6">{{ title }}</div>
-          <div class="subtitle-text1 q-mb-md">Basic Information</div>
-          <div class="form-card">
-            <div class="row q-gutter-sm q-mb-md">
-              <div class="col-6">
-                <q-select
-                  outlined
-                  v-model="form.options"
-                  :options="titleOptions"
-                  label="Title"
-                  color="teal"
-                  class="col-4"
-                  options-selected-class="text-deep-orange"
-                >
-                  <template v-slot:option="scope">
-                    <q-item v-bind="scope.itemProps">
-                      <q-item-section>
-                        <q-item-label>{{ scope.opt.label }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                </q-select>
+        <q-card-section>
+          <form @submit.prevent="validate">
+            <div class="text-h6">{{ title }}</div>
+            <div class="subtitle-text1 q-mb-md">Basic Information</div>
+            <div class="form-card">
+              <div class="row q-gutter-sm q-mb-md">
+                <div class="col-6">
+                  <q-select
+                    outlined
+                    v-model="form.options"
+                    :options="titleOptions"
+                    label="Title"
+                    color="teal"
+                    class="col-4"
+                    options-selected-class="text-deep-orange"
+                  >
+                    <template v-slot:option="scope">
+                      <q-item v-bind="scope.itemProps">
+                        <q-item-section>
+                          <q-item-label>{{ scope.opt.label }}</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                  </q-select>
+                </div>
+
+                <div class="col-5">
+                  <q-select
+                    outlined
+                    v-model="form.gender"
+                    :options="genderOptions"
+                    label="Gender"
+                    color="teal"
+                    class="col-4"
+                    options-selected-class="text-deep-orange"
+                  >
+                    <template v-slot:option="scope">
+                      <q-item v-bind="scope.itemProps">
+                        <q-item-section>
+                          <q-item-label>{{ scope.opt.label }}</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                  </q-select>
+                </div>
               </div>
 
-              <div class="col-5">
-                <q-select
-                  outlined
-                  v-model="form.gender"
-                  :options="genderOptions"
-                  label="Gender"
-                  color="teal"
-                  class="col-4"
-                  options-selected-class="text-deep-orange"
-                >
-                  <template v-slot:option="scope">
-                    <q-item v-bind="scope.itemProps">
-                      <q-item-section>
-                        <q-item-label>{{ scope.opt.label }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                </q-select>
+              <div class="row q-gutter-sm">
+                <div class="col-6">
+                  <q-input
+                    v-model="form.firtName"
+                    type="text"
+                    label="First Name"
+                    bg-color="white"
+                    lazy-rules
+                    stack-label
+                    outlined
+                    :rules="[
+                      (val) => (val && val.length > 0) || 'Enter a valid name',
+                    ]"
+                  />
+                </div>
+                <div class="col-5">
+                  <q-input
+                    v-model="form.lastName"
+                    type="text"
+                    label="Last Name"
+                    bg-color="white"
+                    lazy-rules
+                    stack-label
+                    outlined
+                    :rules="[
+                      (val) => (val && val.length > 0) || 'Enter a valid name',
+                    ]"
+                  />
+                </div>
+              </div>
+              <div class="row q-gutter-sm">
+                <div class="col-6">
+                  <q-input
+                    v-model="form.nationality"
+                    type="email"
+                    label="Nationality"
+                    bg-color="white"
+                    lazy-rules
+                    class="max-width"
+                    stack-label
+                    outlined
+                    :rules="[
+                      (val) =>
+                        (val && val.length > 0) ||
+                        'Enter a valid Email address',
+                    ]"
+                  />
+                </div>
               </div>
             </div>
-
-            <div class="row q-gutter-sm">
-              <div class="col-6">
-                <q-input
-                  v-model="form.firtName"
-                  type="text"
-                  label="First Name"
-                  bg-color="white"
-                  lazy-rules
-                  stack-label
-                  outlined
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Enter a valid name',
-                  ]"
-                />
-              </div>
-              <div class="col-5">
-                <q-input
-                  v-model="form.lastName"
-                  type="text"
-                  label="Last Name"
-                  bg-color="white"
-                  lazy-rules
-                  stack-label
-                  outlined
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Enter a valid name',
-                  ]"
-                />
-              </div>
-            </div>
-            <div class="row q-gutter-sm">
-              <div class="col-6">
-                <q-input
-                  v-model="form.nationality"
-                  type="email"
-                  label="Nationality"
-                  bg-color="white"
-                  lazy-rules
-                  class="max-width"
-                  stack-label
-                  outlined
-                  :rules="[
-                    (val) =>
-                      (val && val.length > 0) || 'Enter a valid Email address',
-                  ]"
-                />
-              </div>
-            </div>
-          </div>
-        </form>
-      </q-card-section>
+          </form>
+        </q-card-section>
+      </div>
     </q-card>
     <q-card-section>
       <div class="subtitle-text1">Contact Information</div>
@@ -139,14 +141,13 @@
         </div>
       </div>
     </q-card-section>
-    </div>
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
 import { useAppStore } from "@/stores/main";
-import { storeToRefs } from 'pinia'
+import { storeToRefs } from "pinia";
 
 export default {
   name: "passengers",
