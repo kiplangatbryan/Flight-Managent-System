@@ -17,4 +17,14 @@ import { RouterView } from "vue-router";
 .bg-accent-kq {
   background: var(--main-accent-color) !important;
 }
+
+.fade-enter-active,
+.fade-enter-leave {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-enter-to {
+  opacity: 0;
+}
 </style>
