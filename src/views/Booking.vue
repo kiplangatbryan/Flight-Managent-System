@@ -4,8 +4,12 @@ import FooterKQ from "@/components/FooterKQ.vue";
 import AvailableFlightsKQ from "@/components/displayFlights.vue";
 import passengerInfo from "@/components/passengerInfo.vue";
 import paymentOptions from "@/components/paymentOpt.vue";
+import searchFlight from "@/components/searchFlight.vue";
 
-import { ref } from "vue";
+import { useAppStore } from "@/stores/main";
+import { storeToRefs } from "pinia";
+
+import { ref, onMounted } from "vue";
 
 export default {
   components: {
@@ -14,6 +18,7 @@ export default {
     AvailableFlightsKQ,
     passengerInfo,
     paymentOptions,
+    searchFlight,
   },
   setup() {
     const step = ref(1);
@@ -21,10 +26,19 @@ export default {
       step.value = step.value - 1;
     };
 
+    const store = useAppStore();
+
+    const { booking, searchShow, bookingStep, cardShow } = storeToRefs(store);
+
     return {
       step,
       editor: "",
+      booking,
       backFunc,
+      searchShow,
+      cardShow,
+      bookingStep,
+      round_trip: ref(false),
     };
   },
 };
@@ -35,10 +49,26 @@ export default {
     <header class="main_nav">
       <KQNavigation />
     </header>
+    <Transition
+      appear
+      enter-active-class="animate__animated animate__bounce"
+      leave-
+      active-class="animate__animated animate__jello"
+      mode="out-in"
+    >
+      <div class="row" v-if="searchShow">
+        <searchFlight class="max-width" />
+      </div>
+    </Transition>
 
+    <!-- alternative content goes here -->
+
+    <div class="row content justify-between q-gutter-sm" v-if="searchShow">
+      <div class="text-h4">Some of the Offers available</div>
+    </div>
     <!-- launch the search switcher here -->
-    <div class="row content justify-between b-layout-fix">
-      <div class="col-md-9 col-lg-9">
+    <div class="row content justify-between q-gutter-sm">
+      <div class="col-md-8 col-lg-8" v-if="bookingStep">
         <q-card class="bg-primary">
           <q-stepper
             class="shadow-0"
@@ -75,7 +105,7 @@ export default {
             >
               <q-card flat bordered class="q-my-lg">
                 <q-card-section>
-                  <div class="text-h5 q-mb-none">
+                  <div class="text-h6 q-mb-none">
                     Enter Passenger(s) Information
                   </div>
                 </q-card-section>
@@ -127,7 +157,7 @@ export default {
               disable
             >
               <q-card flat bordered class="q-my-lg">
-                <q-card-section>
+                <q-card-section class="fix-font">
                   Try out different ad text to see what brings in the most
                   customers, and learn how to enhance your ads using features
                   like ad extensions. If you run into any problems with your
@@ -151,26 +181,82 @@ export default {
         </q-card>
       </div>
 
-      <div class="col-md-auto col-lg-auto">
-        <q-card flat bordered>
+      <div class="col-md-3 col-lg-3" v-if="cardShow">
+        <q-card class="custom-box shadow-2" bordered>
           <div class="content-apk">
             <q-card-section>
               <div class="text-h6 row">
-                <div class="q-ml-md text-h5">OutBound</div>
+                <div class="q-ml-md text-h6">Summary</div>
               </div>
-              <div class="q-my-md row items-start">
-                <div class="q-mr-sm">
-                  <q-spinner-orbit color="primary" size="1.3em" />
-                  <q-tooltip :offset="[0, 8]">QSpinnerPie</q-tooltip>
+            </q-card-section>
+            <div class="row">
+              <div class="col-11 bg-grey-4 switch-block">
+                <q-toggle v-model="round_trip" icon="round" />
+              </div>
+            </div>
+            <q-card-section>
+              <div class="row items-start">
+                <div class="counter bg-grey-3 q-mr-sm"></div>
+
+                <div class="line-pack">
+                  <span class="text-bold sum-title">Seatle</span><br />
+                  <span class="subtitle-text2">United States</span>
                 </div>
+              </div>
+              <div class="row items-start">
+                <div class="counter bg-grey-3 q-mr-sm"></div>
                 <div>
-                  <div class="text-bold">SEATTLE (SA) - NAIROBI (KE)</div>
-                  <div class="subtitle-text2">14hrs long Trip</div>
+                  <span class="text-bold sum-title">Nairobi</span><br />
+                  <span class="subtitle-text2">Kenya</span>
                 </div>
               </div>
             </q-card-section>
 
-            <q-card-section class="q-pt-none"> </q-card-section>
+            <q-card-section
+              class="q-pt-none"
+              v-if="booking.flightInfo.class_type"
+            >
+              <div class="row">
+                <div class="row items-start">
+                  <div class="q-mr-md">
+                    <q-icon name="link" color="grey" size="1.2em" />
+                  </div>
+                  <div>
+                    <span class="text-bold sum-title">{{
+                      booking.flightInfo.class_type
+                    }}</span
+                    ><br />
+                    <span class="subtitle-text2">class</span>
+                  </div>
+                </div>
+              </div>
+            </q-card-section>
+
+            <q-card-section class="q-pt-none" v-if="booking.person">
+              <div class="row justify-between">
+                <div class="row items-start">
+                  <div class="q-mr-md">
+                    <q-icon name="person" color="grey" size="1.2em" />
+                  </div>
+                  <div>
+                    <span class="text-bold sum-title"
+                      >{{ booking.person }} Person(s)</span
+                    ><br />
+                    <span class="subtitle-text2">Passenger</span>
+                  </div>
+                </div>
+
+                <div class="row bg-grey-4 rounded items-center">
+                  <q-btn
+                    label="-"
+                    class="btn-custom q-mr-sm bg-white"
+                    flat
+                    rounded
+                  />
+                  <q-btn label="+" class="btn-custom bg-white" flat rounded />
+                </div>
+              </div>
+            </q-card-section>
           </div>
         </q-card>
       </div>
@@ -192,12 +278,60 @@ export default {
 .adjust-step {
   font-size: 20px !important;
 }
-
+.btn-custom {
+  font-size: 14px;
+}
 .fix-font {
+  font-size: 15px;
+}
+
+.switch-block {
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.sum-title {
   font-size: 17px;
+}
+
+.custom-box {
+  width: 100%;
+  border-radius: 10px;
 }
 
 .b-layout-fix {
   gap: 8px !important;
+}
+
+.max-width {
+  max-width: unset;
+}
+
+.rounded {
+  border-radius: 20px;
+}
+
+.counter {
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+  margin-top: 7px;
+  margin-left: -3px;
+  margin-right: 18px;
+}
+
+.line-pack {
+  position: relative;
+}
+
+.line-pack::before {
+  content: "";
+  position: absolute;
+  background: grey;
+  left: -26px;
+  width: 2px;
+  top: 25px;
+  bottom: calc(50% + 25px);
+  height: calc(50% - 3px);
 }
 </style>
