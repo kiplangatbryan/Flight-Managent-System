@@ -14,7 +14,6 @@ export default {
   },
   watch: {
     fetched(newValue, oldValue) {
-      console.log("change detected");
       this.populateUsingId();
     },
   },
@@ -23,24 +22,26 @@ export default {
     var flights = ref([]);
     var flights_to_from = ref({});
 
-    const { intermediate } = store;
-    const { pageState, fetched } = storeToRefs(store);
+    const { searchToggle } = store;
+    const { pageState, fetched, intermediate } = storeToRefs(store);
 
     // create a fligts list
 
     const populateUsingId = () => {
       // differerent kind of work
-      if (intermediate.data.length == 0) {
+      if (intermediate.value.data.length == 0) {
         return false;
       }
-      flights.value = intermediate["data"];
+      flights.value = intermediate.value["data"];
       flights_to_from.value["to"] = flights.value[0].to.name;
       flights_to_from.value["from"] = flights.value[0].from.name;
       return true;
     };
 
     onMounted(() => {
-      populateUsingId();
+      if (populateUsingId()) searchToggle(false);
+      console.log("hurray mounted");
+      console.log("fetched" + fetched);
     });
 
     return {
