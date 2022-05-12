@@ -3,10 +3,12 @@ import { defineStore } from 'pinia'
 export const useAppStore = defineStore({
   id: 'main',
   state: () => ({
-    searchShow: false,
+    searchShow: true,
     bookingState: false,
     intermediate: { data: [] },
     pageState: true,
+    bookingStep: false,
+    cardShow: false,
     fetched: false,
     activePackage: {},
     booking: { passengers: 1, },
@@ -80,27 +82,43 @@ export const useAppStore = defineStore({
 
   }),
   actions: {
-    searchToggle() {
-      if (this.searchShow) this.searchShow = false
-      else this.searchShow = true
+    searchToggle(val) {
+      this.searchShow = val
     },
+
+    toggleStep(val) {
+      this.bookingStep = val
+    },
+
+    toggleSummary(val) {
+      this.cardShow = val
+      console.log(this.cardShow)
+    },
+
     updateFetch() {
       if (this.fetched) this.fetched = false
       else this.fetched = true
     },
+
     changeActivePackage(data) {
       this.activePackage = data
     },
+
     updatePageState() {
       if (this.pageState) this.pageState = false
       else this.pageState = true
     },
+
     async getFlights() {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve(this.routes)
         }, 500)
       })
+    },
+
+    AddBookingInfo(info) {
+      this.booking = info
     },
 
     async searchFlight({ from, to, departure, class_type }) {
