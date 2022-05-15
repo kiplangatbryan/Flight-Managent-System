@@ -2,136 +2,133 @@
   <main>
     <q-card flat>
       <q-card-section>
-        <div class="row q-gutter-md">
-          <div class="col-3 row">
-            <div class="col-12">
-              <q-select
-                v-model="flight_params.from"
-                :options="FromOptions"
-                label="From"
-                outlined
-                flat
-                class="bg-white"
-                use-input
-                @filter="filterFromFn"
-                input-debounce="0"
-              >
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps">
-                    <q-item-section>
-                      <q-item-label>{{ scope.opt.label }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
-            <div class="col-12">
-              <q-select
-                v-model="flight_params.to"
-                :options="ToOptions"
-                label="To"
-                outlined
-                flat
-                class="bg-white"
-                use-input
-                @filter="filterToFn"
-                input-debounce="0"
-              >
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps">
-                    <q-item-section>
-                      <q-item-label>{{ scope.opt.label }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
-          </div>
-
-          <div class="col-3 row">
-            <div class="col-12">
-              <q-select
-                v-model="flight_params.trip_type"
-                :options="TripOptions"
-                label="Trip"
-                outlined
-                flat
-                class="bg-white"
-              >
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps">
-                    <q-item-section>
-                      <q-item-label>{{ scope.opt.label }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
-            <div class="col-12">
-              <q-select
-                v-model="flight_params.class_type"
-                :options="classOptions"
-                label="class"
-                outlined
-                flat
-                class="bg-white"
-              >
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps">
-                    <q-item-section>
-                      <q-item-label>{{ scope.opt.label }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
-          </div>
-
-          <div class="col-3 row">
-            <div class="col-12">
-              <q-input
-                v-model="flight_params.departure"
-                type="date"
-                label="Departure"
-                bg-color="white"
-                lazy-rules
-                stack-label
-                outlined
-                :rules="[
-                  (val) => (val && val.length > 0) || 'Enter a departure date',
-                ]"
-              >
-              </q-input>
-            </div>
-
-            <div class="col-12">
-              <q-input
-                v-model="flight_params.arrival"
-                type="date"
-                label="Arrival"
-                bg-color="white"
-                lazy-rules
-                stack-label
-                outlined
-                :rules="[
-                  (val) => (val && val.length > 0) || 'Enter a arrival date',
-                ]"
-              >
-              </q-input>
-            </div>
-          </div>
-
-          <div class="col-2">
-            <q-btn
-              label="Find Flight"
-              icon="fly"
-              class="btn-kq"
-              color="primary"
-              no-caps
-              @click="searchForFlight"
-            ></q-btn>
+        <div class="row q-mb-sm">
+          <div class="col-3 q-pa-sm bg-grey-4 round-3">
+            <!-- default is two way -->
+            <q-toggle
+              v-model="flight_params.trip_type"
+              icon="sync"
+              label="Round Trip"
+            />
+            <div>{{ trip_label }}</div>
           </div>
         </div>
+        <q-form @submit="searchFunc">
+          <div class="row q-gutter-md">
+            <div class="col-3 row">
+              <div class="col-12">
+                <q-select
+                  v-model="flight_params.from"
+                  :options="FromOptions"
+                  label="From"
+                  outlined
+                  flat
+                  class="bg-white"
+                  use-input
+                  @filter="filterFromFn"
+                  input-debounce="0"
+                >
+                  <template v-slot:option="scope">
+                    <q-item v-bind="scope.itemProps">
+                      <q-item-section>
+                        <q-item-label>{{ scope.opt.label }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+              </div>
+              <div class="col-12">
+                <q-select
+                  v-model="flight_params.to"
+                  :options="ToOptions"
+                  label="Where are you going?"
+                  outlined
+                  flat
+                  class="bg-white"
+                  use-input
+                  @filter="filterToFn"
+                  input-debounce="0"
+                >
+                  <template v-slot:option="scope">
+                    <q-item v-bind="scope.itemProps">
+                      <q-item-section>
+                        <q-item-label>{{ scope.opt.label }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+              </div>
+            </div>
+
+            <div class="col-3 row">
+              <div class="col-12">
+                <q-select
+                  v-model="flight_params.class_type"
+                  :options="classOptions"
+                  label="class"
+                  outlined
+                  flat
+                  class="bg-white"
+                >
+                  <template v-slot:option="scope">
+                    <q-item v-bind="scope.itemProps">
+                      <q-item-section>
+                        <q-item-label>{{ scope.opt.label }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+              </div>
+            </div>
+
+            <div class="col-3 row">
+              <div class="col-12">
+                <q-input
+                  v-model="flight_params.departure"
+                  type="date"
+                  label="Departure"
+                  bg-color="white"
+                  lazy-rules
+                  stack-label
+                  outlined
+                  :rules="[
+                    (val) =>
+                      (val && val.length > 0) || 'Enter a departure date',
+                  ]"
+                >
+                </q-input>
+              </div>
+
+              <div class="col-12">
+                <q-input
+                  v-model="flight_params.arrival"
+                  type="date"
+                  label="Arrival"
+                  bg-color="white"
+                  lazy-rules
+                  stack-label
+                  outlined
+                  :rules="[
+                    (val) => (val && val.length > 0) || 'Enter a arrival date',
+                  ]"
+                >
+                </q-input>
+              </div>
+            </div>
+
+            <div class="col-2">
+              <q-btn
+                label="Find Flight"
+                icon="flight_takeoff"
+                class="btn-kq"
+                color="primary"
+                type="submit"
+                no-caps
+                @click="searchForFlight"
+              ></q-btn>
+            </div>
+          </div>
+        </q-form>
       </q-card-section>
     </q-card>
   </main>
@@ -146,10 +143,20 @@ import { storeToRefs } from "pinia";
 
 export default {
   name: "tabFlight",
-
+  watch: {
+    "flight_params.trip_type"(val, old) {
+      if (val) this.trip_label = tripValues[val.toString];
+      else this.trip_label = tripValues[val.toString];
+    },
+  },
   setup() {
     const store = useAppStore();
     var FromOptions = ref([]);
+    const trip_pabel = ref("Round Trip");
+    const tripValues = {
+      true: "Round Trip",
+      false: "One Way",
+    };
     var ToOptions = ref([]);
     var allDestinations = null;
     var flight_params = ref({
@@ -157,7 +164,8 @@ export default {
       departure: null,
       from: null,
       to: null,
-      trip_type: null,
+      passengers: null,
+      trip_type: true,
       class_type: null,
     });
 
@@ -269,7 +277,9 @@ export default {
 
     return {
       searchForFlight,
+      tripValues,
       filterToFn,
+      trip_pabel,
       filterFromFn,
       TripOptions: ref([
         {

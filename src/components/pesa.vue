@@ -1,20 +1,24 @@
 <template>
   <div class="text-left">
-    <div class="text-h4 q-mt-lg">Ticket Order Payment</div>
+    <div class="text-h5 q-mt-lg">Ticket Order Payment</div>
     <div class="kq-spacing q-mt-lg">
       You need to make a commitment to take the flight within the hour
     </div>
 
-    <div class="kq-spacing row items-center border-1">
-      <q-icon name="lock" size="20" color="orange" />
-      <span class="q-ml-lg">secure payment</span>
-    </div>
-
-    <q-card bordered flat class="kq-spacing" style="max-width: 350px">
-      <q-card-section>
+    <q-card
+      bordered
+      flat
+      class="kq-spacing kq-info q-pa-md"
+      style="max-width: 350px"
+    >
+      <div class="kq-spacing row items-center border-1">
+        <q-icon name="lock" size="20" color="orange" />
+        <span class="q-ml-lg">Secure Payment</span>
+      </div>
+      <div class="subtitle-text3">
         Pay your flight fees securely via mpesa. Your payment is going through a
         secure channel. Feel Free
-      </q-card-section>
+      </div>
     </q-card>
 
     <div class="row items-start kq-spacing">
@@ -75,6 +79,11 @@ export default {
 .kq_dash {
   border-bottom: 2px solid #000;
   margin-bottom: 5px;
+}
+
+.kq-info {
+  background: #fcff668a;
+  font-size: 15px;
 }
 
 .kq_font_size {
