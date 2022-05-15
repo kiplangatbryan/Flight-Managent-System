@@ -28,3 +28,9 @@ yarn install
 ```sh
 yarn run dev
 ```
+
+
+## Design Takedowns and Wins
+
+1. manage authentication
+2. prevent next page without clearing
