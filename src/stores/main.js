@@ -8,6 +8,11 @@ export const useAppStore = defineStore({
     intermediate: { data: [] },
     pageState: true,
     bookingStep: false,
+    siteState: {
+      flightTab: true,
+      travelerTab: true,
+      payTab: true,
+    },
     cardShow: false,
     fetched: false,
     activePackage: {},
@@ -27,7 +32,7 @@ export const useAppStore = defineStore({
         depart: new Date(Date.now() + 1 * 60 * 60 * 1000),
         from: { name: "Nairobi", country: 'Kenya', alias: "NBO" },
         to: { name: "Seatle", country: 'United States', alias: "SEA" },
-        packages: [{ name: 'Economy', price: '362, 510' }, { name: 'Business', price: '485, 150' },],
+        packages: [{ name: 'Economy', price: '362, 510', seats: 70 }, { name: 'Business', price: '485, 150', seats: 40 },],
         stops: 1,
       },
       {
@@ -35,7 +40,7 @@ export const useAppStore = defineStore({
         depart: new Date(Date.now() + 3 * 60 * 60 * 1000),
         from: { name: "Mombasa", country: 'Kenya', alias: "KE" },
         to: { name: "Seatle", country: 'United States', alias: "SEA" },
-        packages: [{ name: 'Economy', price: '362,510' }, { name: 'Business', price: '485,150' },],
+        packages: [{ name: 'Economy', price: '362,510', seats: 70 }, { name: 'Business', price: '485,150', seats: 40 },],
         stops: 1,
       },
       {
@@ -43,7 +48,7 @@ export const useAppStore = defineStore({
         depart: new Date(Date.now() + 8 * 60 * 60 * 1000),
         from: { name: "Mombasa", country: 'Kenya', alias: "KE" },
         to: { name: "Nairobi", country: 'Kenya', alias: "NBO" },
-        packages: [{ name: 'Economy', price: '5,880' }, { name: 'Business', price: '8,750' },],
+        packages: [{ name: 'Economy', price: '5,880', seats: 70 }, { name: 'Business', price: '8,750', seats: 40 },],
         stops: 1,
       },
       {
@@ -51,7 +56,7 @@ export const useAppStore = defineStore({
         depart: new Date(Date.now() + 2 * 60 * 60 * 1000),
         from: { name: "Mogadishu", country: "Somalia", alias: "SOM" },
         to: { name: "Sydney", country: "Australia", alias: "AUS" },
-        packages: [{ name: 'Economy', price: '462,510' }, { name: 'Business', price: '585,150' },],
+        packages: [{ name: 'Economy', price: '462,510', seats: 70 }, { name: 'Business', price: '585,150', seats: 40 },],
         stops: 1,
       },
       {
@@ -59,7 +64,7 @@ export const useAppStore = defineStore({
         depart: new Date(Date.now() + 5 * 60 * 60 * 1000),
         from: { name: "Eldoret", country: "Kenya", alias: "KE" },
         to: { name: "Moscow", country: 'Russia', alias: "RU" },
-        packages: [{ name: 'Economy', price: '232,550' }, { name: 'Business', price: '385,450' },],
+        packages: [{ name: 'Economy', price: '232,550', seats: 70 }, { name: 'Business', price: '385,450', seats: 40 },],
         stops: 1,
       },
       {
@@ -67,7 +72,7 @@ export const useAppStore = defineStore({
         depart: new Date(Date.now() + 4 * 60 * 60 * 1000),
         from: { name: "Eldoret", country: "Kenya", alias: "KE" },
         to: { name: "Moscow", country: 'Russia', alias: "RU" },
-        packages: [{ name: 'Economy', price: '232,550' }, { name: 'Business', price: '385,450' },],
+        packages: [{ name: 'Economy', price: '232,550', seats: 70 }, { name: 'Business', price: '385,450', seats: 40 },],
         stops: 1,
       },
       {
@@ -75,7 +80,7 @@ export const useAppStore = defineStore({
         depart: new Date(Date.now() + 2 * 60 * 60 * 1000),
         from: { name: "Mogadishu", country: "Somalia", alias: "SOM" },
         to: { name: "Sydney", country: "Australia", alias: "AUS" },
-        packages: [{ name: 'Economy', price: '462,510' }, { name: 'Business', price: '585,150' },],
+        packages: [{ name: 'Economy', price: '462,510', seats: 70 }, { name: 'Business', price: '585,150', seats: 40 },],
         stops: 1,
       }
     ],
@@ -84,6 +89,25 @@ export const useAppStore = defineStore({
   actions: {
     searchToggle(val) {
       this.searchShow = val
+    },
+    updateAppState(key) {
+      switch (key) {
+        case 'flightTab':
+          if (this.siteState[key]) this.siteState[key] = false
+          else this.siteState[key] = true
+          break
+        case 'travelerTab':
+          if (this.siteState[key]) this.siteState[key] = false
+          else this.siteState[key] = true
+          break
+        case 'payTab':
+          if (this.siteState[key]) this.siteState[key] = false
+          else this.siteState[key] = true
+          break
+        default:
+        // 
+      }
+
     },
 
     toggleStep(val) {
@@ -121,7 +145,7 @@ export const useAppStore = defineStore({
       this.booking = info
     },
 
-    async searchFlight({ from, to, departure, class_type }) {
+    async searchFlight({ from, to, departure, class_type, passengers }) {
       var flights = await this.getFlights()
 
       const formatKey = (obj) => {
@@ -141,7 +165,9 @@ export const useAppStore = defineStore({
             return true
           }
         })
-        return result
+
+        if (result == undefined) return false
+        return true
 
       }
       const result = flights.filter((el) => {
@@ -154,8 +180,9 @@ export const useAppStore = defineStore({
 
       this.intermediate['data'] = result
       this.intermediate['class_type'] = class_type.value
+      this.booking['passengers'] = parseInt(passengers)
+      this.booking['class_type'] = class_type.value
 
-      console.log(result)
 
       return true
     }

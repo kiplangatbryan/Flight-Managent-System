@@ -20,19 +20,50 @@ export default {
     paymentOptions,
     searchFlight,
   },
+  watch: {
+    booking(val, old) {
+      this.enumerateFlight(val.id);
+    },
+  },
   setup() {
     const step = ref(1);
+    const travel = ref({});
+
     const backFunc = () => {
       step.value = step.value - 1;
     };
 
     const store = useAppStore();
+    const {
+      booking,
+      searchShow,
+      siteState,
+      bookingStep,
+      cardShow,
+      intermediate,
+    } = storeToRefs(store);
 
-    const { booking, searchShow, bookingStep, cardShow } = storeToRefs(store);
+    const enumerateFlight = (id) => {
+      const res = intermediate.value.data.find((el) => {
+        if (el.id == id) return true;
+      });
+      if (res == undefined) {
+        console.log("undefined behaviour");
+        return;
+      }
+
+      travel.value = {
+        from: { ...res.from },
+        to: { ...res.to },
+      };
+    };
 
     return {
+      enumerateFlight,
       step,
+      travel,
       editor: "",
+      siteState,
       booking,
       backFunc,
       searchShow,
@@ -64,7 +95,7 @@ export default {
     <!-- alternative content goes here -->
 
     <div class="row content justify-between q-gutter-sm" v-if="searchShow">
-      <div class="text-h4">Some of the Offers available</div>
+      <div class="text-h5">Some of the Offers available</div>
     </div>
     <!-- launch the search switcher here -->
     <div class="row content justify-between q-gutter-sm">
@@ -93,7 +124,13 @@ export default {
               <AvailableFlightsKQ />
 
               <q-stepper-navigation>
-                <q-btn @click="step = 2" color="primary" label="Continue" />
+                <q-btn
+                  @click="step = 2"
+                  :disable="siteState.flightTab"
+                  color="primary"
+                  no-caps
+                  label="Next"
+                />
               </q-stepper-navigation>
             </q-step>
 
@@ -101,6 +138,7 @@ export default {
               :name="2"
               title="Passengers"
               icon="people"
+              :disable="siteState.flightTab"
               subtitle="Enter your information"
             >
               <q-card flat bordered class="q-my-lg">
@@ -118,13 +156,20 @@ export default {
               <passengerInfo />
 
               <q-stepper-navigation>
-                <q-btn @click="step = 3" color="primary" label="Continue" />
                 <q-btn
-                  flat
                   @click="backFunc"
                   color="primary"
                   label="Back"
                   class="q-ml-sm"
+                  no-caps
+                  outline
+                />
+                <q-btn
+                  @click="step = 3"
+                  :disable="siteState.travelerTab"
+                  no-caps
+                  color="primary"
+                  label="Next"
                 />
               </q-stepper-navigation>
             </q-step>
@@ -135,27 +180,31 @@ export default {
               icon="seat"
               class="adjust-step"
               subtitle="Make payment for your flight"
+              :disable="siteState.travelerTab"
             >
               <paymentOptions />
+
               <q-stepper-navigation>
-                <q-btn @click="step = 3" color="primary" label="Continue" />
                 <q-btn
-                  flat
                   @click="backFunc"
                   color="primary"
                   label="Back"
                   class="q-ml-sm"
+                  outline
+                  no-caps
+                />
+
+                <q-btn
+                  @click="step = 3"
+                  no-caps
+                  color="primary"
+                  :disabled="siteState.payTab"
+                  label="Next"
                 />
               </q-stepper-navigation>
             </q-step>
 
-            <q-step
-              :name="4"
-              title="Finish"
-              class="adjust-step"
-              icon="thumbs"
-              disable
-            >
+            <q-step :name="4" title="Finish" class="adjust-step" icon="thumbs">
               <q-card flat bordered class="q-my-lg">
                 <q-card-section class="fix-font">
                   Try out different ad text to see what brings in the most
@@ -167,14 +216,15 @@ export default {
               </q-card>
 
               <q-stepper-navigation>
-                <q-btn color="primary" label="Finish" />
                 <q-btn
-                  flat
                   @click="backFunc"
                   color="primary"
                   label="Back"
                   class="q-ml-sm"
+                  outline
+                  no-caps
                 />
+                <q-btn color="primary" no-caps label="Finish" />
               </q-stepper-navigation>
             </q-step>
           </q-stepper>
@@ -199,23 +249,22 @@ export default {
                 <div class="counter bg-grey-3 q-mr-sm"></div>
 
                 <div class="line-pack">
-                  <span class="text-bold sum-title">Seatle</span><br />
-                  <span class="subtitle-text2">United States</span>
+                  <span class="text-bold sum-title">{{ travel.from.name }}</span
+                  ><br />
+                  <span class="subtitle-text2">{{ travel.from.country }}</span>
                 </div>
               </div>
               <div class="row items-start">
                 <div class="counter bg-grey-3 q-mr-sm"></div>
                 <div>
-                  <span class="text-bold sum-title">Nairobi</span><br />
-                  <span class="subtitle-text2">Kenya</span>
+                  <span class="text-bold sum-title">{{ travel.to.name }}</span
+                  ><br />
+                  <span class="subtitle-text2">{{ travel.to.country }}</span>
                 </div>
               </div>
             </q-card-section>
 
-            <q-card-section
-              class="q-pt-none"
-              v-if="booking.flightInfo.class_type"
-            >
+            <q-card-section class="q-pt-none" v-if="booking.class_type">
               <div class="row">
                 <div class="row items-start">
                   <div class="q-mr-md">
@@ -223,7 +272,7 @@ export default {
                   </div>
                   <div>
                     <span class="text-bold sum-title">{{
-                      booking.flightInfo.class_type
+                      booking.class_type
                     }}</span
                     ><br />
                     <span class="subtitle-text2">class</span>
@@ -232,7 +281,7 @@ export default {
               </div>
             </q-card-section>
 
-            <q-card-section class="q-pt-none" v-if="booking.person">
+            <q-card-section class="q-pt-none" v-if="booking.passengers">
               <div class="row justify-between">
                 <div class="row items-start">
                   <div class="q-mr-md">
@@ -240,20 +289,19 @@ export default {
                   </div>
                   <div>
                     <span class="text-bold sum-title"
-                      >{{ booking.person }} Person(s)</span
+                      >{{ booking.passengers }} Person(s)</span
                     ><br />
                     <span class="subtitle-text2">Passenger</span>
                   </div>
                 </div>
 
-                <div class="row bg-grey-4 rounded items-center">
+                <div class="row items-center">
                   <q-btn
                     label="-"
-                    class="btn-custom q-mr-sm bg-white"
-                    flat
+                    class="bg-info q-mr-sm text-dark kq-btn"
                     rounded
                   />
-                  <q-btn label="+" class="btn-custom bg-white" flat rounded />
+                  <q-btn label="+" class="bg-info text-dark kq-btn" rounded />
                 </div>
               </div>
             </q-card-section>
@@ -273,7 +321,7 @@ export default {
 
 .content {
   padding: 2em 10em;
-  min-height: 100vh;
+  min-height: 50vh;
 }
 .adjust-step {
   font-size: 20px !important;
@@ -294,6 +342,10 @@ export default {
   font-size: 17px;
 }
 
+.kq-btn {
+  font-size: 20px;
+  font-weight: bold;
+}
 .custom-box {
   width: 100%;
   border-radius: 10px;

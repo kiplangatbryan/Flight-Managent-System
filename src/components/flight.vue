@@ -16,6 +16,7 @@ export default {
     const store = useAppStore();
     const { changeActivePackage, AddBookingInfo, toggleSummary } = store;
     const { activePackage, booking } = storeToRefs(store);
+    const packageKey = ref(11);
 
     const selectPackage = (offerOb) => {
       let data = {
@@ -25,7 +26,8 @@ export default {
 
       let flightData = {
         ...booking.value,
-        flightInfo: { id: props.flight.id, class_type: offerOb.name },
+        id: props.flight.id,
+        class_type: offerOb.name,
       };
 
       AddBookingInfo(flightData);
@@ -33,11 +35,18 @@ export default {
       changeActivePackage(data);
     };
 
+    const updateKey = () => {
+      console.log("package updated ");
+      packageKey.value += 1;
+    };
+
     return {
       formatTime(time_data) {
         return moment(time_data).format("LLLL");
       },
       selectPackage,
+      updateKey,
+      packageKey,
       activePackage,
     };
   },
@@ -82,11 +91,12 @@ export default {
         <Transition
           appear
           enter-active-class="animate__animated animate__fadeLeft"
-          leave-
           active-class="animate__animated animate__fadeLeft"
           mode="out-in"
         >
           <FlightMode
+            @update-key="updateKey"
+            :key="packageKey"
             :class_type="activePackage.data.name"
             :price="activePackage.data.price"
             :seats="7"

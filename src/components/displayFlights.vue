@@ -61,8 +61,11 @@ export default {
     <q-card borderless flat>
       <q-card-section v-if="pageState"> </q-card-section>
       <q-card-section>
-        <div class="text-h5 q-mb-md" v-if="!pageState">
+        <div class="text-h6 q-mb-md" v-if="!pageState">
           Select Your Preferred flight
+        </div>
+        <div class="text-h6 q-mb-md" v-else>
+          Choose a flight from the list below
         </div>
         <Flight
           v-for="(flight, index) in flights"

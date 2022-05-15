@@ -1,18 +1,74 @@
 <template>
-  <div class="container">
+  <div class="container q-py-lg">
     <div class="max-width">
-      <div class="text-h5">Find a flight</div>
+      <div class="text-h4 q-mb-md">Where do you want to Fly?</div>
+    </div>
+    <div class="row q-gutter-sm max-width justify-start">
+      <div class="col-2">
+        <q-select
+          v-model="flight_params.trip_type"
+          :options="TripOptions"
+          label="class"
+          flat
+          class="bg-white"
+        >
+          <template v-slot:option="scope">
+            <q-item v-bind="scope.itemProps">
+              <q-item-section>
+                <q-item-label>{{ scope.opt.label }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col-2">
+        <q-input
+          v-model="flight_params.passengers"
+          type="number"
+          label="passengers"
+          class="bg-white"
+          :rules="[
+            (val) => (typeof val && val.length > 0) || 'Enter a departure date',
+            (val) => val <= 60 || 'Passengers cannot exceed',
+          ]"
+        >
+          <template v-slot:option="scope">
+            <q-item v-bind="scope.itemProps">
+              <q-item-section>
+                <q-item-label>{{ scope.opt.label }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-input>
+      </div>
+      <div class="col-2">
+        <q-select
+          v-model="flight_params.class_type"
+          :options="classOptions"
+          label="class"
+          flat
+          class="bg-white"
+        >
+          <template v-slot:option="scope">
+            <q-item v-bind="scope.itemProps">
+              <q-item-section>
+                <q-item-label>{{ scope.opt.label }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
     </div>
     <div class="row q-gutter-sm max-width justify-between">
-      <div class="col-5 row">
+      <div class="col-6 row">
         <div class="col-6">
           <q-select
             v-model="flight_params.from"
             :options="FromOptions"
             label="From"
             outlined
-            flat
-            class="bg-white"
+            standout
+            class="bg-white out-cast"
             use-input
             @filter="filterFromFn"
             input-debounce="0"
@@ -30,10 +86,10 @@
           <q-select
             v-model="flight_params.to"
             :options="ToOptions"
-            label="To"
+            label="Where are you headed?"
             outlined
             flat
-            class="bg-white"
+            class="bg-white out-cast"
             use-input
             @filter="filterToFn"
             input-debounce="0"
@@ -49,51 +105,8 @@
         </div>
       </div>
 
-      <div class="col-4 row">
-        <div class="col-5">
-          <q-input
-            v-model="flight_params.passengers"
-            type="text"
-            label="No. of passengers"
-            outlined
-            flat
-            class="bg-white"
-            :rules="[
-              (val) =>
-                (typeof val && val.length > 0) || 'Enter a departure date',
-            ]"
-          >
-            <template v-slot:option="scope">
-              <q-item v-bind="scope.itemProps">
-                <q-item-section>
-                  <q-item-label>{{ scope.opt.label }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-input>
-        </div>
+      <div class="col-3 row">
         <div class="col-6">
-          <q-select
-            v-model="flight_params.class_type"
-            :options="classOptions"
-            label="class"
-            outlined
-            flat
-            class="bg-white"
-          >
-            <template v-slot:option="scope">
-              <q-item v-bind="scope.itemProps">
-                <q-item-section>
-                  <q-item-label>{{ scope.opt.label }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-      </div>
-
-      <div class="col-2 row">
-        <div class="col-auto">
           <q-input
             v-model="flight_params.departure"
             type="date"
@@ -109,7 +122,7 @@
           </q-input>
         </div>
 
-        <div class="col-6" v-if="flight_params.trip_type">
+        <div class="col-6" v-if="showArrival">
           <q-input
             v-model="flight_params.arrival"
             type="date"
@@ -125,23 +138,11 @@
           </q-input>
         </div>
       </div>
-    </div>
-    <div class="row justify-between max-width">
-      <div>
-        <div class="text-h6">Type of trip</div>
-        <div>
-          <q-toggle
-            v-model="flight_params.trip_type"
-            icon="round"
-            label="Round Trip"
-          />
-        </div>
-      </div>
 
-      <div class="justify-self-end">
+      <div class="col-2">
         <q-btn
           label="Search Flight"
-          icon="search"
+          icon-right="flight_takeoff"
           @click="searchForFlight"
           color="primary"
           class="search-btn"
@@ -160,18 +161,58 @@ import { useQuasar, QSpinnerCube } from "quasar";
 
 export default {
   name: "create-task-modal",
+  watch: {
+    "flight_params.trip_type"(val, old) {
+      if (val.value == "return") {
+        this.showArrival = false;
+      } else {
+        this.showArrival = true;
+      }
+    },
+  },
 
   setup() {
     var FromOptions = ref([]);
     var ToOptions = ref([]);
+    const showArrival = ref(true);
     var allDestinations = null;
+    const TripOptions = [
+      {
+        label: "Round",
+        value: "return",
+      },
+      {
+        label: "One Way",
+        value: "direct",
+      },
+    ];
+
+    const classOptions = [
+      {
+        label: "Any",
+        value: "all",
+      },
+      {
+        label: "Economy",
+        value: "Economy",
+      },
+      {
+        label: "Business",
+        value: "Business",
+      },
+      {
+        label: "First Class",
+        value: "First_class",
+      },
+    ];
     var flight_params = ref({
       arrival: null,
       departure: null,
       from: null,
       to: null,
-      trip_type: false,
-      class_type: null,
+      passengers: 1,
+      trip_type: TripOptions[0],
+      class_type: classOptions[0],
     });
 
     const store = useAppStore();
@@ -253,37 +294,12 @@ export default {
       searchForFlight,
       filterToFn,
       filterFromFn,
-      TripOptions: ref([
-        {
-          label: "Two Way",
-          value: "return",
-        },
-        {
-          label: "One Way",
-          value: "direct",
-        },
-      ]),
-      classOptions: [
-        {
-          label: "Any",
-          value: "all",
-        },
-        {
-          label: "Economy",
-          value: "Economy",
-        },
-        {
-          label: "Business",
-          value: "Business",
-        },
-        {
-          label: "First Class",
-          value: "First_class",
-        },
-      ],
+      TripOptions,
+      classOptions,
       FromOptions,
       ToOptions,
       flight_params,
+      showArrival,
     };
   },
 };
@@ -306,5 +322,9 @@ export default {
 
 .message_body {
   font-size: 30px;
+}
+
+.out-cast {
+  border-right: unset !important;
 }
 </style>

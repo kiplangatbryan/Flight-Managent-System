@@ -101,46 +101,47 @@
             </div>
           </form>
         </q-card-section>
+        <q-card-section>
+          <div class="subtitle-text1">Contact Information</div>
+        </q-card-section>
+        <q-card-section>
+          <div class="row q-gutter-sm">
+            <div class="col-6">
+              <q-input
+                v-model="form.email"
+                type="email"
+                label="Email address"
+                bg-color="white"
+                lazy-rules
+                stack-label
+                class="max-width"
+                outlined
+                :rules="[
+                  (val) =>
+                    (val && val.length > 0) || 'Enter a valid Email address',
+                ]"
+              />
+            </div>
+            <div class="col-5">
+              <q-input
+                v-model="form.phone"
+                type="text"
+                label="Phone Number"
+                bg-color="white"
+                lazy-rules
+                stack-label
+                class="max-width"
+                outlined
+                :rules="[
+                  (val) =>
+                    (val && val.length >= 10) || 'Enter a valid Phone Number',
+                ]"
+              />
+            </div>
+          </div>
+        </q-card-section>
       </div>
     </q-card>
-    <q-card-section>
-      <div class="subtitle-text1">Contact Information</div>
-    </q-card-section>
-    <q-card-section>
-      <div class="row q-gutter-sm">
-        <div class="col-6">
-          <q-input
-            v-model="form.email"
-            type="email"
-            label="Email address"
-            bg-color="white"
-            lazy-rules
-            stack-label
-            class="max-width"
-            outlined
-            :rules="[
-              (val) => (val && val.length > 0) || 'Enter a valid Email address',
-            ]"
-          />
-        </div>
-        <div class="col-5">
-          <q-input
-            v-model="form.phone"
-            type="text"
-            label="Phone Number"
-            bg-color="white"
-            lazy-rules
-            stack-label
-            class="max-width"
-            outlined
-            :rules="[
-              (val) =>
-                (val && val.length >= 10) || 'Enter a valid Phone Number',
-            ]"
-          />
-        </div>
-      </div>
-    </q-card-section>
   </div>
 </template>
 

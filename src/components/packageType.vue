@@ -1,24 +1,43 @@
 <script>
 import { ref } from "vue";
+import { useAppStore } from "@/stores/main";
+
 export default {
   props: ["class_type", "price", "seats"],
   watch: {
     check(newVal, oldVal) {
-      this.updateState();
+      if (newVal) {
+        this.updateState("selected");
+        this.updateAppState("flightTab");
+      } else {
+        this.updateState("select");
+        this.updateAppState("flightTab");
+      }
     },
+  },
+  mounted() {
+    console.log("mounted");
+  },
+  beforeUpdate() {
+    // reload component
+    this.$emit("update-key");
   },
   setup() {
     var select = ref("select");
-    var checked = ref("selected");
-    const check = ref("");
+    var checked = ref("select");
+    const check = ref(false);
 
-    const updateState = () => (select.value = checked.value);
+    const store = useAppStore();
+    const { updateAppState } = store;
+
+    const updateState = (val) => (select.value = val);
 
     return {
       select,
       checked,
       check,
       updateState,
+      updateAppState,
     };
   },
 };
@@ -28,11 +47,10 @@ export default {
   <q-card bordered flat class="custom-box">
     <q-item-section class="bg-grey-3 q-py-md">
       <div class="text-center domain">
-        <q-radio
+        <q-checkbox
           v-model="check"
           checked-icon="task_alt"
           unchecked-icon="panorama_fish_eye"
-          :val="checked"
           :label="select"
         />
         <div class="text-small">KES</div>
