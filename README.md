@@ -1,10 +1,9 @@
 <p align="center">
   <a href="https://digishop.gameen.gg" target="_blank">
-    <img alt="Gameen Logo" width="400" src="https://gameen.gg/static/images/gameen01.png">
+    <img alt="Project Description Image"  src="https://user-images.githubusercontent.com/55278664/281642948-c70c66ef-c05b-4fa5-969f-c220dc365d35.png">
   </a>
  
 </p>
-
 This is a Flight Booking system built using [VueJs](https://vuejs.org/).  
 
 ## Tools Used
