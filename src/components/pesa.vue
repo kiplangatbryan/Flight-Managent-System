@@ -53,22 +53,13 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { onMounted, ref } from "vue";
-export default {
-  name: "mpesaPay",
-  setup() {
-    onMounted(() => {});
-    const phone = ref(null);
 
-    const checked = ref(false);
+onMounted(() => {});
+const phone = ref(null);
 
-    return {
-      phone,
-      checked,
-    };
-  },
-};
+const checked = ref(false);
 </script>
 
 <style lang="css" scoped>

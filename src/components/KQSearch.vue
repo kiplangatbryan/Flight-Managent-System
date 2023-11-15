@@ -24,33 +24,21 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
 import { useAppStore } from "@/stores/main";
 import { storeToRefs } from "pinia";
 
-export default {
-  components: {},
-  setup() {
-    const search = ref(null);
-    const searchQuery = function () {
-      console.log(search.value);
-    };
-
-    const store = useAppStore();
-
-    const { searchShow } = storeToRefs(store);
-
-    const { searchToggle } = store;
-
-    return {
-      search,
-      searchQuery,
-      searchShow,
-      searchToggle,
-    };
-  },
+const search = ref(null);
+const searchQuery = function () {
+  console.log(search.value);
 };
+
+const store = useAppStore();
+
+const { searchShow } = storeToRefs(store);
+
+const { searchToggle } = store;
 </script>
 
 <style scoped>

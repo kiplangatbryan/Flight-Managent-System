@@ -1,4 +1,4 @@
-<script>
+<script setup>
 import KQNavigation from "@/components/KQNavigation.vue";
 import FlightSelectCard from "@/components/flightSelectCard.vue";
 import TabFlight from "@/components/TabFlight.vue";
@@ -10,52 +10,35 @@ import { onMounted, ref } from "vue";
 
 import { useAppStore } from "@/stores/main";
 
-export default {
-  components: {
-    KQNavigation,
-    FlightSelectCard,
-    TabFlight,
-    TabCheckIn,
-    FooterKQ,
-    KQCard,
-  },
-  name: "home",
+const subscribe = ref(null);
+const store = useAppStore();
 
-  setup() {
-    onMounted(() => {
-      console.log("mounted");
-    });
-    const subscribe = ref(null);
-    const store = useAppStore();
+const modalShow = ref(false);
 
-    const { flights } = store;
-
-    return {
-      flights,
-      modalShow: false,
-      subscribe,
-    };
-  },
-};
+const { flights } = store;
 </script>
 
 <template>
   <main class="home__page">
-    <div class="landing_section">
+    <div class="container landing_section">
       <KQNavigation />
 
-      <h3 class="landing_text q-mt-lg text-white">
-        Hey Buddy! where are you<br />
-        <b>Flying</b> to?
-      </h3>
+      <div class="landing_mod">
+        <h3 class="landing_text q-mt-lg text-white">
+          Hey Buddy! where are you<br />
+          <b>Flying</b> to?
+        </h3>
+  
+        <q-btn
+          to="/make-a-booking"
+          color="primary"
+          style="font-size: 18px"
+          no-caps
+          label="Book Now &#10230;"
+        />
 
-      <q-btn
-        to="/make-a-booking"
-        color="primary"
-        style="font-size: 20px"
-        no-caps
-        label="Book Now &#10230;"
-      />
+      </div>
+
     </div>
     <div class="container">
       <div class="flight_select">
@@ -74,12 +57,14 @@ export default {
 
       <!-- page-section -->
 
-      <div class="section q-mt-md q-mb-lg">
-        <div class="text-h5 q-mb-md">Top Destinations</div>
+      <section class="section q-mt-md q-mb-lg">
+        <div class="k-space">
+          <div class="text-h4 q-mb-md">Top Destinations</div>
         <div class="subtitle section-space">
           Get to <span>Explore</span> and <span>Find</span> a variety of Places,
           we will take you there.
         </div>
+      </div>
 
         <div class="row q-gutter-md">
           <div class="col-3" v-for="(route, index) in flights" :key="index">
@@ -91,17 +76,19 @@ export default {
             />
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- page-section -->
 
-      <div class="section q-mt-lg">
+      <section class="section q-mt-lg">
         <div class="help_card text-white">
           <div class="content">
             <div class="text-h4 q-mb-md">Never Miss An Offer</div>
             <div class="subtitle q-mb-md">
-              Subscribe and be the first to receive
-              <span>exclusive</span> content from KQ
+              <div>
+                Subscribe and be the first to receive
+                <span>exclusive</span> content from <span>Dooley Airways</span>
+              </div>
 
               <q-input
                 v-model="subscribe"
@@ -129,7 +116,7 @@ export default {
             />
           </div>
         </div>
-      </div>
+      </section>
     </div>
     <FooterKQ />
   </main>
@@ -138,20 +125,22 @@ export default {
 <style>
 .home__page {
 }
-
-.container {
-  padding: 0 10rem;
-}
-
 .landing_text {
   text-align: left;
   line-height: 1.5;
-  margin-top: 5rem !important;
+  margin: 3rem 0 !important;
+}
+
+@media (max-width: 999px) {
+  .landing_text {
+    margin: 2rem 0 !important;
+  }
 }
 .max-width {
   max-width: 500px;
   margin: 0.5em 0;
 }
+
 .help_card {
   background: linear-gradient(60deg, transparent, #141414),
     linear-gradient(60deg, transparent, #141414),
@@ -159,7 +148,7 @@ export default {
   background-size: cover;
   background-attachment: fixed;
   position: realtive;
-  height: 50vh;
+  min-height: 350px;
   border-radius: 5px;
   margin-bottom: 10em;
 }
@@ -171,11 +160,20 @@ export default {
   padding: 4em 0;
 }
 
+@media (max-width: 980px) {
+  .help_card .content {
+    width: 100%;
+    position: unset;
+    padding: 4rem;
+  }
+}
+
+
 a {
   display: inline-block;
   padding: 0 1rem;
   font-size: 1rem;
-  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
   color: #eee;
   text-decoration: none;
   margin-top: 1rem;
@@ -185,12 +183,37 @@ a {
 
 .landing_section {
   width: 100%;
-  min-height: 70vh;
+  min-height: 540px;
   background: linear-gradient(-45deg, transparent, #141414),
     url("@/assets/png-1.jpg") center;
   background-size: cover;
   background-attachment: fixed;
-  padding: 0 10rem;
+}
+
+@media (max-width: 600px) {
+  .landing_section {
+    min-height: 470px;
+  }
+}
+@media (max-width: 600px) {
+
+  .help_card .content {
+    padding: 4rem 2rem;
+  }
+  .landing_mod, .k-space  {
+    padding: 0 2rem !important;
+  }
+
+  .landing_text {
+    line-height: 1.2;
+  }
+  .landing_mod h3 {
+
+    font-size: 36px;
+  }
+  .help_card {
+    border-radius: 0;
+  }
 }
 
 .flight_select {

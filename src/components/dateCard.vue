@@ -10,15 +10,8 @@
   </div>
 </template>
 
-<script>
-import { onMounted } from "vue";
-export default {
-  props: ["price", "date", "currency", "active", "btn"],
-  setup() {
-    onMounted(() => {});
-    return {};
-  },
-};
+<script setup>
+defineProps(["price", "date", "currency", "active", "btn"]);
 </script>
 
 <style lang="css" scoped>

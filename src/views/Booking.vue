@@ -1,84 +1,54 @@
-<script>
+<script setup>
 import KQNavigation from "@/components/KQNavigation.vue";
 import FooterKQ from "@/components/FooterKQ.vue";
 import AvailableFlightsKQ from "@/components/displayFlights.vue";
 import passengerInfo from "@/components/passengerInfo.vue";
 import paymentOptions from "@/components/paymentOpt.vue";
-import searchFlight from "@/components/searchFlight.vue";
+import searchFlight from "@/components/TabFlight.vue";
 
 import { useAppStore } from "@/stores/main";
 import { storeToRefs } from "pinia";
 
-import { ref, onMounted } from "vue";
+import { ref, watch } from "vue";
 
-export default {
-  components: {
-    KQNavigation,
-    FooterKQ,
-    AvailableFlightsKQ,
-    passengerInfo,
-    paymentOptions,
-    searchFlight,
-  },
-  watch: {
-    booking(val, old) {
-      this.enumerateFlight(val.id);
-    },
-  },
-  setup() {
-    const step = ref(1);
-    const travel = ref({});
+const step = ref(1);
+const travel = ref({});
+const round_trip = ref(false);
 
-    const backFunc = () => {
-      step.value = step.value - 1;
-    };
-
-    const store = useAppStore();
-    const {
-      booking,
-      searchShow,
-      siteState,
-      bookingStep,
-      cardShow,
-      intermediate,
-    } = storeToRefs(store);
-
-    const enumerateFlight = (id) => {
-      const res = intermediate.value.data.find((el) => {
-        if (el.id == id) return true;
-      });
-      if (res == undefined) {
-        console.log("undefined behaviour");
-        return;
-      }
-
-      travel.value = {
-        from: { ...res.from },
-        to: { ...res.to },
-      };
-    };
-
-    return {
-      enumerateFlight,
-      step,
-      travel,
-      editor: "",
-      siteState,
-      booking,
-      backFunc,
-      searchShow,
-      cardShow,
-      bookingStep,
-      round_trip: ref(false),
-    };
-  },
+const backFunc = () => {
+  step.value = step.value - 1;
 };
+
+const store = useAppStore();
+const { booking, searchShow, siteState, bookingStep, cardShow, intermediate } =
+  storeToRefs(store);
+
+const enumerateFlight = (id) => {
+  const res = intermediate.value.data.find((el) => {
+    if (el.id == id) return true;
+  });
+  if (res == undefined) {
+    console.log("undefined behaviour");
+    return;
+  }
+
+  travel.value = {
+    from: { ...res.from },
+    to: { ...res.to },
+  };
+};
+
+watch(booking, (val, old) => {
+  enumerateFlight(val.id);
+});
 </script>
 
 <template>
   <div class="body">
     <header class="main_nav">
-      <KQNavigation />
+      <div class="container">
+        <KQNavigation />
+      </div>
     </header>
     <Transition
       appear
@@ -87,15 +57,15 @@ export default {
       active-class="animate__animated animate__jello"
       mode="out-in"
     >
-      <div class="row" v-if="searchShow">
-        <searchFlight class="max-width" />
+      <div class="container" v-if="searchShow">
+        <searchFlight />
       </div>
     </Transition>
 
     <!-- alternative content goes here -->
 
     <div class="row content justify-between q-gutter-sm" v-if="searchShow">
-      <div class="text-h5">Some of the Offers available</div>
+      <div class="text-h6">Some of the Offers available</div>
     </div>
     <!-- launch the search switcher here -->
     <div class="row content justify-between q-gutter-sm">
@@ -316,7 +286,6 @@ export default {
 <style lang="css" scoped>
 .main_nav {
   background: #000;
-  padding: 0 10em;
 }
 
 .content {

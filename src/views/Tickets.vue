@@ -63,16 +63,11 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "about-page",
-  data() {
-    return {
-      tab: "todo",
-      splitterModel: 20,
-    };
-  },
-};
+<script setup>
+import { reactive } from "vue";
+
+let tab = reactive("todo");
+let splitterModel = reactive(20);
 </script>
 
 <style>

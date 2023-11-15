@@ -1,56 +1,44 @@
-<script>
-import flightPackage from "@/components/package.vue";
+<script setup>
+import FlightPackage from "@/components/package.vue";
 import FlightMode from "@/components/packageType.vue";
-import { ref, onMounted } from "vue";
-import moment from "moment";
+import { ref, watch } from "vue";
 import { useAppStore } from "@/stores/main";
 import { storeToRefs } from "pinia";
 
-export default {
-  components: {
-    package: flightPackage,
-    FlightMode,
-  },
-  props: ["flight"],
-  setup(props) {
-    const store = useAppStore();
-    const { changeActivePackage, AddBookingInfo, toggleSummary } = store;
-    const { activePackage, booking } = storeToRefs(store);
-    const packageKey = ref(11);
+const emit = defineEmits(["updateSelected"]);
+const props = defineProps(["flight", "passengers"]);
+const store = useAppStore();
+const { AddBookingInfo, toggleSummary } = store;
+const { activePackage, booking } = storeToRefs(store);
+const packageKey = ref(0);
 
-    const selectPackage = (offerOb) => {
-      let data = {
-        id: props.flight.id,
-        data: offerOb,
-      };
+// watch for change in selected package and update activaPackage selection flag
+watch(
+  () => activePackage.id,
+  (newVal, oldValue) => {
+    if (props.flight.id != newVal) {
+      selected.value = "";
+    }
+  }
+);
 
-      let flightData = {
-        ...booking.value,
-        id: props.flight.id,
-        class_type: offerOb.name,
-      };
+const selected = ref("");
 
-      AddBookingInfo(flightData);
-      setTimeout(() => toggleSummary(true), 1);
-      changeActivePackage(data);
-    };
+const selectPackage = (offerOb) => {
+  let flightData = {
+    ...booking.value,
+    id: props.flight.id,
+    class_type: offerOb.name,
+    data: offerOb,
+  };
 
-    const updateKey = () => {
-      console.log("package updated ");
-      packageKey.value += 1;
-    };
+  selected.value = offerOb.name;
 
-    return {
-      formatTime(time_data) {
-        return moment(time_data).format("LLLL");
-      },
-      selectPackage,
-      updateKey,
-      packageKey,
-      activePackage,
-    };
-  },
+  AddBookingInfo(flightData);
+  setTimeout(() => toggleSummary(true), 1);
+  emit("updateSelected", flightData);
 };
+
 </script>
 
 <template>
@@ -59,34 +47,43 @@ export default {
       <div class="col-5 row items-between no-wrap">
         <div class="col-4 from">
           <div class="text-h6 fix-title">
-            {{ flight.from.alias }}
+            {{ props.flight.from.alias }}
           </div>
-          <div class="subtitle-text3">{{ flight.from.name }}</div>
+          <div class="subtitle-text3">{{ props.flight.from.name }}</div>
         </div>
         <div class="col-4 timeline text-center">
           <q-icon name="flight" size="14px" class="change_angle" />
           <div class="special_text">15hrs 22min</div>
-          <div class="special_text">{{ flight.stops }} stops(s)</div>
+          <div class="special_text">{{ props.flight.stops }} stops(s)</div>
         </div>
         <div class="col-4 text-right to">
           <div class="text-h6 fix-title">
             {{ flight.to.alias }}
           </div>
-          <div class="subtitle-text3">{{ flight.to.name }}</div>
+          <div class="subtitle-text3">{{ props.flight.to.name }}</div>
         </div>
       </div>
       <!-- offers here -->
       <div class="col-7 row justify-end q-pl-md">
-        <package
-          class="q-mr-sm"
-          @chosen-package="selectPackage"
-          v-for="(offer, index) in flight.packages"
-          :offer="offer"
-          :key="index"
-        />
+        <transition-group
+          appear
+          enter-active-class="animate__animated animate__bounce"
+          leave-
+          active-class="animate__animated animate__jello"
+          mode="out-in"
+        >
+          <FlightPackage
+            class="q-mr-sm"
+            @chosen-package="selectPackage"
+            :selected="selected"
+            v-for="(offer, index) in props.flight.packages"
+            :offer="offer"
+            :key="index"
+          />
+        </transition-group>
       </div>
     </div>
-    <q-card-section v-if="activePackage.id == flight.id">
+    <q-card-section v-if="activePackage.id == props.flight.id">
       <div class="row items-center">
         <Transition
           appear

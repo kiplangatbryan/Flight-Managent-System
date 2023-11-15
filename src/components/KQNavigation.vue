@@ -1,35 +1,41 @@
-<script>
-import { RouterLink } from "vue-router";
+<script setup>
 import { useAppStore } from "@/stores/main";
 
-export default {
-  setup() {
-    const store = useAppStore();
+const store = useAppStore();
 
-    const { searchToggle } = store;
-
-    return {
-      searchToggle,
-    };
-  },
-};
+const { searchToggle } = store;
 </script>
 
 <template>
   <header>
     <main class="row items-center">
-      <main class="logo-text text-white q-mr-lg">Kenya <b>Airways</b></main>
-      <nav>
+      <div class="toggle-nav">
+        <q-btn
+          flat
+          to="/make-a-booking"
+          @click="toggleNav"
+          class="fix"
+          icon="menu"
+          size="xl"
+        ></q-btn>
+      </div>
+      <main class="logo-text text-white q-mr-lg">Dooley <b>Airways</b></main>
+      <nav class="k-navigation">
         <RouterLink to="/">Book Flight</RouterLink>
         <RouterLink to="/make-a-booking">Booking</RouterLink>
-        <RouterLink to="/support">Guest Support</RouterLink>
-        <RouterLink to="/about-us">About Us</RouterLink>
       </nav>
     </main>
 
     <aside class="row justify-between items-center q-gutter-sm">
-      <div class="col">
-        <q-btn flat @click="searchToggle" class="fix" icon="search"></q-btn>
+      <div class="col k-search-btn">
+        <q-btn
+          flat
+          to="/make-a-booking"
+          rounded
+          @click="searchToggle"
+          class="fix"
+          icon="search"
+        ></q-btn>
       </div>
       <div class="col">
         <q-btn
@@ -57,6 +63,33 @@ header {
 .logo-text {
   font-size: 20px;
   margin-top: 15px;
+}
+
+.toggle-nav {
+  display: none;
+}
+@media (max-width: 700px) {
+  .k-navigation,
+  .k-search-btn {
+    display: none;
+  }
+
+  .toggle-nav {
+    display: block;
+  }
+  aside {
+    min-width: unset !important;
+  }
+}
+
+@media (max-width: 600px) {
+  header {
+    padding: 0px 1em 0 10px !important;
+    margin: 0 !important;
+  }
+
+ 
+  
 }
 
 .fix {

@@ -81,39 +81,33 @@
   </main>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
 
-export default {
-  setup() {
-    return {
-      model: ref(null),
+const model = ref(null);
 
-      options: [
-        {
-          label: "Nairobi, Kenya",
-          value: "Nairobi_KE",
-        },
-        {
-          label: "New York, USA",
-          value: "Newyork_USA",
-        },
-        {
-          label: "Cape Town, South Africa",
-          value: "capetown_SA",
-        },
-        {
-          label: "Lagos, Nigeria",
-          value: "lagos",
-        },
-        {
-          label: "Tunis, Tunisia",
-          value: "tunis",
-        },
-      ],
-    };
+const options = [
+  {
+    label: "Nairobi, Kenya",
+    value: "Nairobi_KE",
   },
-};
+  {
+    label: "New York, USA",
+    value: "Newyork_USA",
+  },
+  {
+    label: "Cape Town, South Africa",
+    value: "capetown_SA",
+  },
+  {
+    label: "Lagos, Nigeria",
+    value: "lagos",
+  },
+  {
+    label: "Tunis, Tunisia",
+    value: "tunis",
+  },
+];
 </script>
 
 <style scoped>

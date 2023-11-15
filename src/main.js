@@ -3,6 +3,7 @@
 import { createApp } from 'vue'
 import { Quasar, Dialog, Loading } from 'quasar'
 
+import piniaPluginPersistedState from 'pinia-plugin-persistedstate';
 
 import { createPinia } from 'pinia'
 import router from './router'
@@ -11,9 +12,7 @@ import router from './router'
 import '@quasar/extras/material-icons/material-icons.css'
 
 // A few examples for animations from Animate.css:
-// import @quasar/extras/animate/fadeIn.css
-// import @quasar/extras/animate/fadeOut.css
-
+// import '@quasar/extras/animate/animate-list'
 // Import Quasar css
 import 'quasar/src/css/index.sass'
 
@@ -23,7 +22,12 @@ import App from './App.vue'
 
 const myApp = createApp(App)
 
-myApp.use(createPinia())
+
+const pinia = createPinia();
+pinia.use( piniaPluginPersistedState );
+
+myApp.use( pinia )
+
 myApp.use(router)
 myApp.use(Quasar, {
   plugins: {

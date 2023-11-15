@@ -5,8 +5,8 @@
     class="q-mr-sm q-pa-sm boxed"
     @click="$emit('chosenPackage', offer)"
     :class="[
-      active ? selected : '',
-      offer.name == 'Economy' ? 'bg-secondary' : 'bg-grey-1',
+      offer.name == 'Economy' ? 'bg-yellow' : 'bg-grey-1',
+      selected == offer.name ? 'selected' : '',
     ]"
   >
     <q-item-section>
@@ -23,7 +23,7 @@
     </q-item-section>
 
     <q-item-section>
-      <q-btn v-if="selected" label="selected" color="red" />
+      <q-btn v-if="offer.selected" label="selected" color="red" />
     </q-item-section>
 
     <q-item-section>
@@ -32,36 +32,8 @@
   </q-card>
 </template>
 
-<script>
-import { onMounted, ref } from "vue";
-import { useAppStore } from "@/stores/main";
-import { storeToRefs } from "pinia";
-export default {
-  props: ["offer"],
-  setup() {
-    var selected = ref(false);
-    const store = useAppStore();
-    const { pageState, intermediate } = storeToRefs(store);
-
-    onMounted(() => {
-      // set main vars
-      let class_s = intermediate.class_type;
-      if (!pageState) {
-        if (class_s == "all") {
-          selected.value = false;
-        } else {
-          selected.value = intermediate.class_type;
-        }
-      }
-
-      selected.value = false;
-    });
-
-    return {
-      selected,
-    };
-  },
-};
+<script setup>
+defineProps(["offer", "selected"]);
 </script>
 
 <style lang="css" scoped>
@@ -69,6 +41,10 @@ export default {
   max-width: 150px;
   transition: all 0.3s ease-in-out;
   cursor: pointer;
+}
+
+.selected {
+  outline: 3px solid blue;
 }
 .boxed:hover {
   transform: scale(1.05);

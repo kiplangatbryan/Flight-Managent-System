@@ -145,56 +145,45 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
 import { useAppStore } from "@/stores/main";
 import { storeToRefs } from "pinia";
 
-export default {
-  name: "passengers",
-  methods: {
-    validate() {},
-  },
-  setup() {
-    const form = ref({});
-    const title = ref("Passenger");
-    const store = useAppStore();
+const form = ref({});
+const title = ref("Passenger");
+const store = useAppStore();
 
-    const { booking } = storeToRefs(store);
+const { booking } = storeToRefs(store);
 
-    return {
-      title,
-      flight_params: ref(""),
-      booking,
-      titleOptions: [
-        {
-          label: "Mr",
-          value: "Mr",
-        },
-        {
-          label: "Mrs",
-          value: "Mrs",
-        },
-      ],
-      genderOptions: [
-        {
-          label: "Male",
-          value: "male",
-        },
-        {
-          label: "Female",
-          value: "female",
-        },
-        {
-          label: "Other",
-          value: "other",
-        },
-      ],
-      form,
-    };
+const validate = () => {};
+
+const titleOptions = [
+  {
+    label: "Mr",
+    value: "Mr",
   },
-};
+  {
+    label: "Mrs",
+    value: "Mrs",
+  },
+];
+const genderOptions = [
+  {
+    label: "Male",
+    value: "male",
+  },
+  {
+    label: "Female",
+    value: "female",
+  },
+  {
+    label: "Other",
+    value: "other",
+  },
+];
+
+const flight_params = ref("");
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

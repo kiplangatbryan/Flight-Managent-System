@@ -11,7 +11,8 @@
         active-color="primary"
         indicator-color="primary"
         align="justify"
-        style="max-width: 700px"
+        mobile-arrows
+
       >
         <q-tab icon="flight" name="flights" color="secondary" label="Flights" />
         <q-tab name="check_in" icon="door" label="Check In" />
@@ -40,17 +41,11 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
 
-export default {
-  components: {},
-  setup() {
-    return {
-      tab: ref("flights"),
-    };
-  },
-};
+const tab = ref("flights")
+ 
 </script>
 
 <style scoped>

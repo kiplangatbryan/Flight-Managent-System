@@ -1,46 +1,33 @@
-<script>
-import { ref } from "vue";
+<script setup>
+import { ref, watch, onBeforeUpdate } from "vue";
 import { useAppStore } from "@/stores/main";
 
-export default {
-  props: ["class_type", "price", "seats"],
-  watch: {
-    check(newVal, oldVal) {
-      if (newVal) {
-        this.updateState("selected");
-        this.updateAppState("flightTab");
-      } else {
-        this.updateState("select");
-        this.updateAppState("flightTab");
-      }
-    },
-  },
-  mounted() {
-    console.log("mounted");
-  },
-  beforeUpdate() {
-    // reload component
-    this.$emit("update-key");
-  },
-  setup() {
-    var select = ref("select");
-    var checked = ref("select");
-    const check = ref(false);
+defineProps(["class_type", "price", "seats"]);
+const emit = defineEmits(["update-key"]);
 
-    const store = useAppStore();
-    const { updateAppState } = store;
+var select = ref("select");
+const check = ref(false);
 
-    const updateState = (val) => (select.value = val);
+const store = useAppStore();
+const { updateAppState, confirmPackage } = store;
 
-    return {
-      select,
-      checked,
-      check,
-      updateState,
-      updateAppState,
-    };
-  },
-};
+const updateState = (val) => (select.value = val);
+
+watch(check, (newVal, oldVal) => {
+  if (newVal) {
+    updateState("selected");
+    updateAppState("flightTab");
+    confirmPackage(true);
+  } else {
+    updateState("select");
+    updateAppState("flightTab");
+    confirmPackage(false);
+  }
+});
+onBeforeUpdate(() => {
+  // reload component
+  emit("update-key");
+});
 </script>
 
 <template>
@@ -92,7 +79,6 @@ export default {
     </q-item-section>
   </q-card>
 </template>
-
 
 <style scoped>
 .domain {

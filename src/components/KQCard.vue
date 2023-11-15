@@ -17,18 +17,11 @@
   </div>
 </template>
 
-<script>
-export default {
-  components: {},
-  props: ["class_bs", "city", "price", "index"],
-  setup() {
-    const imageFunc = (index) => {
-      return `src/assets/png-${index}.jpg`;
-    };
-    return {
-      imageFunc,
-    };
-  },
+<script setup>
+defineProps(["class_bs", "city", "price", "index"]);
+
+const imageFunc = (index) => {
+  return `src/assets/png-${index}.jpg`;
 };
 </script>
 

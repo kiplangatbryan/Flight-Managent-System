@@ -153,156 +153,137 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { useAppStore } from "@/stores/main";
 import { storeToRefs } from "pinia";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useQuasar, QSpinnerCube } from "quasar";
 
-export default {
-  name: "create-task-modal",
-  watch: {
-    "flight_params.trip_type"(val, old) {
-      if (val.value == "return") {
-        this.showArrival = false;
-      } else {
-        this.showArrival = true;
-      }
-    },
+watch("flight_params.trip_type", (val, old) => {
+  if (val.value == "return") {
+    this.showArrival = false;
+  } else {
+    this.showArrival = true;
+  }
+});
+
+var FromOptions = ref([]);
+var ToOptions = ref([]);
+const showArrival = ref(true);
+var allDestinations = null;
+const TripOptions = [
+  {
+    label: "Round",
+    value: "return",
   },
-
-  setup() {
-    var FromOptions = ref([]);
-    var ToOptions = ref([]);
-    const showArrival = ref(true);
-    var allDestinations = null;
-    const TripOptions = [
-      {
-        label: "Round",
-        value: "return",
-      },
-      {
-        label: "One Way",
-        value: "direct",
-      },
-    ];
-
-    const classOptions = [
-      {
-        label: "Any",
-        value: "all",
-      },
-      {
-        label: "Economy",
-        value: "Economy",
-      },
-      {
-        label: "Business",
-        value: "Business",
-      },
-      {
-        label: "First Class",
-        value: "First_class",
-      },
-    ];
-    var flight_params = ref({
-      arrival: null,
-      departure: null,
-      from: null,
-      to: null,
-      passengers: 1,
-      trip_type: TripOptions[0],
-      class_type: classOptions[0],
-    });
-
-    const store = useAppStore();
-    const qua = useQuasar();
-
-    const { searchFlight, updateFetch, searchToggle, toggleStep } = store;
-
-    const { destinations } = storeToRefs(store);
-
-    const searchForFlight = async () => {
-      qua.loading.show({
-        message: "We are searching for your flight",
-        messageColor: "white",
-        backgroundColor: "red",
-        spinnerColor: "primary",
-        spinner: QSpinnerCube,
-      });
-      const q = await searchFlight(flight_params.value);
-      if (!q) {
-        // show alert box
-        qua.loading.hide();
-
-        return;
-      }
-
-      setTimeout(() => {
-        updateFetch();
-        searchToggle(false);
-      }, 1);
-      toggleStep(true);
-
-      qua.loading.hide();
-    };
-
-    const createOptionsFromFLights = () => {
-      // all flights
-      allDestinations = destinations.value.map((destination) => {
-        return {
-          value: destination.name + "_" + destination.alias,
-          label: destination.name,
-        };
-      });
-
-      FromOptions.value = ToOptions.value = allDestinations;
-    };
-
-    const filterToFn = (val, update) => {
-      update(() => {
-        if (val === "") {
-          // do nothing
-        } else {
-          const flightvalue = val.toLowerCase();
-          ToOptions.value = ToOptions.value.filter(
-            (v) => v.label.toLowerCase().indexOf(flightvalue) > -1
-          );
-        }
-      });
-    };
-
-    const filterFromFn = (val, update) => {
-      update(() => {
-        if (val === "") {
-          // do nothing
-        } else {
-          const flightvalue = val.toLowerCase();
-          FromOptions.value = FromOptions.value.filter(
-            (v) => v.label.toLowerCase().indexOf(flightvalue) > -1
-          );
-        }
-      });
-    };
-
-    onMounted(async () => {
-      // create options
-      createOptionsFromFLights();
-    });
-
-    return {
-      searchForFlight,
-      filterToFn,
-      filterFromFn,
-      TripOptions,
-      classOptions,
-      FromOptions,
-      ToOptions,
-      flight_params,
-      showArrival,
-    };
+  {
+    label: "One Way",
+    value: "direct",
   },
+];
+
+const classOptions = [
+  {
+    label: "Any",
+    value: "all",
+  },
+  {
+    label: "Economy",
+    value: "Economy",
+  },
+  {
+    label: "Business",
+    value: "Business",
+  },
+  {
+    label: "First Class",
+    value: "First_class",
+  },
+];
+var flight_params = ref({
+  arrival: null,
+  departure: null,
+  from: null,
+  to: null,
+  passengers: 1,
+  trip_type: TripOptions[0],
+  class_type: classOptions[0],
+});
+
+const store = useAppStore();
+const qua = useQuasar();
+
+const { searchFlight, updateFetch, searchToggle, toggleStep } = store;
+
+const { destinations } = storeToRefs(store);
+
+const searchForFlight = async () => {
+  qua.loading.show({
+    message: "We are searching for your flight",
+    messageColor: "white",
+    backgroundColor: "red",
+    spinnerColor: "primary",
+    spinner: QSpinnerCube,
+  });
+  const q = await searchFlight(flight_params.value);
+  if (!q) {
+    // show alert box
+    qua.loading.hide();
+
+    return;
+  }
+
+  setTimeout(() => {
+    updateFetch();
+    searchToggle(false);
+  }, 1);
+  toggleStep(true);
+
+  qua.loading.hide();
 };
+
+const createOptionsFromFLights = () => {
+  // all flights
+  allDestinations = destinations.value.map((destination) => {
+    return {
+      value: destination.name + "_" + destination.alias,
+      label: destination.name,
+    };
+  });
+
+  FromOptions.value = ToOptions.value = allDestinations;
+};
+
+const filterToFn = (val, update) => {
+  update(() => {
+    if (val === "") {
+      // do nothing
+    } else {
+      const flightvalue = val.toLowerCase();
+      ToOptions.value = ToOptions.value.filter(
+        (v) => v.label.toLowerCase().indexOf(flightvalue) > -1
+      );
+    }
+  });
+};
+
+const filterFromFn = (val, update) => {
+  update(() => {
+    if (val === "") {
+      // do nothing
+    } else {
+      const flightvalue = val.toLowerCase();
+      FromOptions.value = FromOptions.value.filter(
+        (v) => v.label.toLowerCase().indexOf(flightvalue) > -1
+      );
+    }
+  });
+};
+
+onMounted(async () => {
+  // create options
+  createOptionsFromFLights();
+});
 </script>
 
 <style lang="css" scoped>

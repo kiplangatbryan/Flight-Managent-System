@@ -1,59 +1,58 @@
-<script>
+<script setup>
 import Flight from "@/components/flight.vue";
 
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import moment from "moment";
 import { useAppStore } from "@/stores/main";
-import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 
-export default {
-  name: "FlightSelect",
-  components: {
-    Flight,
-  },
-  watch: {
-    fetched(newValue, oldValue) {
-      this.populateUsingId();
-    },
-  },
-  setup() {
-    const store = useAppStore();
-    var flights = ref([]);
-    var flights_to_from = ref({});
+const store = useAppStore();
+var flights = ref([]);
+const router = useRouter();
+const today = new Date(Date.now());
 
-    const { searchToggle } = store;
-    const { pageState, fetched, intermediate } = storeToRefs(store);
+const { searchToggle, searchFlight, changeActivePackage} = store;
+const { pageState, intermediate } = storeToRefs(store);
 
-    // create a fligts list
+// create a fligts list
 
-    const populateUsingId = () => {
-      // differerent kind of work
-      if (intermediate.value.data.length == 0) {
-        return false;
-      }
-      flights.value = intermediate.value["data"];
-      flights_to_from.value["to"] = flights.value[0].to.name;
-      flights_to_from.value["from"] = flights.value[0].from.name;
-      return true;
-    };
+const populateUsingId = () => {
+  // differerent kind of work
+  if (intermediate.value.data.length == 0) {
+    return false;
+  }
 
-    onMounted(() => {
-      if (populateUsingId()) searchToggle(false);
-      console.log("hurray mounted");
-      console.log("fetched" + fetched);
-    });
-
-    return {
-      populateUsingId,
-      fetched,
-      today: moment().format("LLLL"),
-      flights,
-      pageState,
-      flights_to_from,
-    };
-  },
+  const updatedFlights = intermediate.value.data.map((val) => {
+    return { ...val, to: intermediate.value.to, from: intermediate.value.from };
+  });
+  flights.value = updatedFlights;
+  return true;
 };
+
+// watch((newValue, oldValue) => {
+//   populateUsingId();
+// });
+
+const changeActive = (data) => {
+  // create a custom component partition.
+  changeActivePackage(data)
+}
+
+onMounted(async () => {
+  if (
+    router.currentRoute.value.query.to &&
+    intermediate.value.data.length > 0
+  ) {
+    await searchFlight({
+      to: { label: router.currentRoute.value.query.to },
+      from: { label: router.currentRoute.value.query.from },
+      departure: today,
+      class_type: "Any",
+    });
+  }
+  if (populateUsingId()) searchToggle(false);
+});
 </script>
 
 <template>
@@ -70,6 +69,8 @@ export default {
         <Flight
           v-for="(flight, index) in flights"
           :flight="flight"
+          
+          @updateSelected="changeActive"
           :key="index"
         />
       </q-card-section>
