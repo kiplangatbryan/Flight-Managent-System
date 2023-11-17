@@ -158,7 +158,7 @@ export const useAppStore = defineStore({
       this.booking = info;
     },
 
-    async searchFlight({ from, to, departure, class_type, passengers }) {
+    async searchFlight ( { from, to, timeline, class_type, passengers } ) {
       var flights = await this.getFlights();
 
       const findClass = (packages) => {
@@ -175,7 +175,7 @@ export const useAppStore = defineStore({
       const avFlights = toRaw( flights );
 
       const result = avFlights.filter( ( el ) => {
-        if ( new Date( el.depart ) > new Date( departure ) ) {
+        if ( new Date( el.depart ) > new Date( timeline.from ) ) {
           return true;
         }
       } );

@@ -19,6 +19,11 @@ const router = createRouter( {
       name: "support",
       component: () => import( "../views/Tickets.vue" ),
     },
+    {
+      path: "/search-results",
+      name: "search-results",
+      component: () => import( "../views/search.vue" ),
+    },
   ],
 });
 

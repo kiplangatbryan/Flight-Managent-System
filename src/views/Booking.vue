@@ -4,7 +4,7 @@ import FooterKQ from "@/components/FooterKQ.vue";
 import AvailableFlightsKQ from "@/components/displayFlights.vue";
 import passengerInfo from "@/components/passengerInfo.vue";
 import paymentOptions from "@/components/paymentOpt.vue";
-import searchFlight from "@/components/TabFlight.vue";
+import landingSection from "@/components/landingSection.vue";
 
 import { useAppStore } from "@/stores/main";
 import { storeToRefs } from "pinia";
@@ -45,29 +45,8 @@ watch(booking, (val, old) => {
 
 <template>
   <div class="body">
-    <header class="main_nav">
-      <div class="container">
-        <KQNavigation />
-      </div>
-    </header>
-    <Transition
-      appear
-      enter-active-class="animate__animated animate__bounce"
-      leave-
-      active-class="animate__animated animate__jello"
-      mode="out-in"
-    >
-      <div class="container" v-if="searchShow">
-        <searchFlight />
-      </div>
-    </Transition>
-
-    <!-- alternative content goes here -->
-
-    <div class="row content justify-between q-gutter-sm" v-if="searchShow">
-      <div class="text-h6">Some of the Offers available</div>
-    </div>
-    <!-- launch the search switcher here -->
+    <KQNavigation />
+    <landingSection />
     <div class="row content justify-between q-gutter-sm">
       <div class="col-md-8 col-lg-8" v-if="bookingStep">
         <q-card class="bg-primary">
@@ -281,6 +260,7 @@ watch(booking, (val, old) => {
     </div>
     <FooterKQ />
   </div>
+  
 </template>
 
 <style lang="css" scoped>

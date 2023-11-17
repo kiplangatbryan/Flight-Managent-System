@@ -7,7 +7,7 @@ const { searchToggle } = store;
 </script>
 
 <template>
-  <header>
+  <header class="k-header bg-white container">
     <main class="row items-center">
       <div class="toggle-nav">
         <q-btn
@@ -19,50 +19,61 @@ const { searchToggle } = store;
           size="xl"
         ></q-btn>
       </div>
-      <main class="logo-text text-white q-mr-lg">Dooley <b>Airways</b></main>
+      <main class="logo-text text-uppercase text-bold  q-mr-lg">Dooley Airways</main>
       <nav class="k-navigation">
-        <RouterLink to="/">Book Flight</RouterLink>
-        <RouterLink to="/make-a-booking">Booking</RouterLink>
+        <RouterLink to="/">Travel</RouterLink>
+        <RouterLink to="/make-a-booking">Deals</RouterLink>
       </nav>
     </main>
 
-    <aside class="row justify-between items-center q-gutter-sm">
-      <div class="col k-search-btn">
-        <q-btn
-          flat
-          to="/make-a-booking"
-          rounded
-          @click="searchToggle"
-          class="fix"
-          icon="search"
-        ></q-btn>
-      </div>
-      <div class="col">
-        <q-btn
-          class="col"
-          to="/contact-us"
-          label="Talk to us"
-          no-caps
-          glossy
-          color="primary"
-        >
-        </q-btn>
-      </div>
-    </aside>
   </header>
 </template>
 
 <style scoped>
-header {
+.k-header {
   display: flex;
   align-items: center;
-  padding: 0.4rem 0 1em 0;
   justify-content: space-between;
+  padding: 0.4rem 10rem 1rem 10rem;
+  right: 0;
+  left: 0;
+  z-index: 1000;
+  box-shadow: 0 1px 20px #7d7c7c6e;
 }
 
+
+/* responsive adjustments */
+
+@media (max-width: 1300px) {
+    .k-header {
+   padding: 0.4rem 5rem 1rem 5rem;
+
+     
+    }
+}
+
+@media (max-width: 1200px) {
+    .k-header {
+       padding: 0.4rem 2rem 1rem 2rem;
+
+     
+    }
+}
+
+@media (max-width: 600px) {
+    .k-header {
+       padding: 0.4rem 1rem 1rem 1rem;
+
+     
+    }
+}
+
+
+
 .logo-text {
-  font-size: 20px;
   margin-top: 15px;
+  letter-spacing: 1px;
+  color: var(--main-color);
 }
 
 .toggle-nav {
@@ -95,23 +106,18 @@ header {
 .fix {
   margin-top: 14px;
 }
-aside {
-  min-width: 200px;
-}
-aside * {
-  color: #fff;
-}
 
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: var(--main-color);
   transition: 0.4s;
 }
 
 @media (hover: hover) {
   a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+       color: var(--main-color);
+
   }
 }
 
@@ -121,7 +127,8 @@ nav {
 }
 
 nav a.router-link-exact-active {
-  color: hsla(160, 100%, 37%, 1);
+    color: var(--main-color);
+
 }
 
 nav a.router-link-exact-active:hover {
@@ -133,7 +140,7 @@ nav a {
   padding: 0 1rem;
   font-size: 1rem;
   border-left: 1px solid var(--color-border);
-  color: #eee;
+  color:  #000;
 }
 
 nav a:first-of-type {

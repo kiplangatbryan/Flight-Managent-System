@@ -1,8 +1,10 @@
 {
   "name": "airline-frontend",
   "version": "0.0.0",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
+    "test:unit": "npx jest unit",
     "build": "vite build",
     "preview": "vite preview --port 5050",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
@@ -10,6 +12,7 @@
   "dependencies": {
     "@quasar/extras": "^1.13.5",
     "animate.css": "^4.1.1",
+    "animejs": "^3.2.1",
     "axios": "^0.26.1",
     "moment": "^2.29.3",
     "pinia": "^2.0.13",

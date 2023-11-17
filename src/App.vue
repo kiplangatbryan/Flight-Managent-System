@@ -10,6 +10,12 @@ import { RouterView } from "vue-router";
 @import "@/assets/base.css";
 @import "@/assets/animate.css";
 
+:root {
+   --header-height: 100px;
+    --main-color: hsla(160, 100%, 37%, 1);
+}
+
+
 #app {
   margin: 0 auto;
   font-weight: normal;

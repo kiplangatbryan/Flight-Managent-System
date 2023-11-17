@@ -2,151 +2,158 @@
   <main>
     <q-card flat>
       <q-card-section>
-        <div class="row q-mb-sm q-gutter-sm k-margin">
-          <div class="col-8 col-lg-4 col-md-4">
-            <!-- default is two way -->
-            <q-toggle
-              v-model="flight_params.trip_type"
-              icon="sync"
-              label="Round Trip"
-            />
-            <div>{{ trip_label }}</div>
-          </div>
-
-          <div class="col-12 col-lg-4 col-md-6">
-            <!-- class option -->
-            <q-select
-              v-model="flight_params.class_type"
-              :options="classOptions"
-              label="Your flight class"
-              outlined
-              flat
-              class="bg-white"
-              @filter="filterFromFn"
-            >
-              <template v-slot:option="scope">
-                <q-item v-bind="scope.itemProps">
-                  <q-item-section>
-                    <q-item-label>{{ scope.opt.label }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-            <div>{{ trip_label }}</div>
-          </div>
-        </div>
         <q-form @submit.prevent="getFlight">
+          <div class="row q-mb-sm q-gutter-lg k-margin">
+            <div class="col-8 col-lg-2 col-md-3">
+              <!-- default is two way -->
+              <q-select
+                v-model="flight_params.trip_type"
+                :options="TripOptions"
+                flat
+                borderless
+                class="bg-white"
+                @filter="filterFromFn"
+              >
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q-item-label>{{ scope.opt.label }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+
+            <div class="col-12 col-lg-2 col-md-3">
+              <!-- class option -->
+              <q-select
+                v-model="flight_params.class_type"
+                :options="classOptions"
+                flat
+                borderless
+                class="bg-white"
+                @filter="filterFromFn"
+              >
+              </q-select>
+              <div>{{ trip_label }}</div>
+            </div>
+
+            <div class="col-12 col-lg-3 col-md-3">
+              <q-input
+                v-model="flight_params.passengers"
+                type="number"
+                label="passengers"
+                borderless=""
+                class="bg-white"
+                :rules="[
+                  (val) => val > 0 || 'Passenger no. cannot be less than 1',
+                  (val) => val <= 10 || 'Passengers cannot exceed',
+                ]"
+              >
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q- item-label>{{ scope.opt.label }}</q->
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-input>
+            </div>
+          </div>
           <div class="text-red" v-show="flight_params.warning">
             <q-icon name="warning"></q-icon> {{ flight_params.error_message }}
           </div>
-          <div class="row q-gutter-sm align-items-center">
-            <div class="col-12 col-lg-6 col-md-6 row q-gutter-sm">
-              <div class="col-12 col-sm-5">
-                <q-select
-                  v-model="flight_params.from"
-                  :options="routes.FromOptions"
-                  label="From"
-                  outlined
-                  flat
-                  class="bg-white"
-                  use-input
-                  @filter="filterFromFn"
-                  input-debounce="0"
-                >
-                  <template v-slot:option="scope">
-                    <q-item v-bind="scope.itemProps">
-                      <q-item-section>
-                        <q-item-label>{{ scope.opt.label }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                </q-select>
-              </div>
-              <div class="col-12 col-sm-6">
-                <q-select
-                  v-model="flight_params.to"
-                  :options="routes.ToOptions"
-                  label="Where are you going?"
-                  outlined
-                  flat
-                  class="bg-white"
-                  use-input
-                  @filter="filterToFn"
-                  input-debounce="0"
-                >
-                  <template v-slot:option="scope">
-                    <q-item v-bind="scope.itemProps">
-                      <q-item-section>
-                        <q-item-label>{{ scope.opt.label }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                </q-select>
-              </div>
+          <div class="row q-gutter-lg items-start justify-start">
+            <div class="col-12 col-sm-3">
+              <q-select
+                v-model="flight_params.depart"
+                :options="routes.FromOptions"
+                prefix="From"
+                outlined
+                flat
+                options-cover
+                use-chips
+                class="bg-white"
+                @filter="filterFromFn"
+                input-debounce="0"
+              >
+                <template v-slot:selected-item="scope">
+                  <q-chip
+                    v-show="flight_params.depart"
+                    square
+                    color="secondary"
+                    removable
+                    @remove="scope.removeAtIndex(scope.index)"
+                    :tabindex="scope.tabindex"
+                    text-color="white"
+                    class="q-my-none q-ml-xs q-mr-none"
+                  >
+                    {{ scope.opt.label }}
+                  </q-chip>
+                </template>
+              </q-select>
             </div>
-
-            <div class="col-12 col-lg-5 col-md-5 row q-gutter-sm">
-              <div class="col-12 col-sm-5">
-                <q-input
-                  v-model="flight_params.departure"
-                  type="date"
-                  label="Departure"
-                  bg-color="white"
-                  lazy-rules
-                  stack-label
-                  outlined
-                  :rules="[validateDeparture]"
-                >
-                </q-input>
-              </div>
-
-              <div class="col-12 col-sm-6" v-if="flight_params.trip_type">
-                <q-input
-                  v-model="flight_params.arrival"
-                  type="date"
-                  label="Arrival"
-                  bg-color="white"
-                  lazy-rules
-                  stack-label
-                  outlined
-                  :rules="[validateArrival]"
-                >
-                </q-input>
-              </div>
+            <div class="col-12 col-sm-3">
+              <q-select
+                v-model="flight_params.destination"
+                :options="routes.ToOptions"
+                prefix="To"
+                outlined
+                flat
+                use-chips
+                options-cover
+                class="bg-white"
+                use-input
+                @filter="filterToFn"
+                input-debounce="0"
+              >
+                <template v-slot:selected-item="scope">
+                  <q-chip
+                    v-show="flight_params.destination"
+                    square
+                    color="secondary"
+                    removable
+                    @remove="scope.removeAtIndex(scope.index)"
+                    :tabindex="scope.tabindex"
+                    text-color="white"
+                    class="q-my-none q-ml-xs q-mr-none"
+                  >
+                    {{ scope.opt.label }}
+                  </q-chip>
+                </template>
+              </q-select>
             </div>
-
-            <div class="col-12 col-lg-5 col-md-5 row q-gutter-sm">
-              <div class="col-12 col-sm-6">
-                <q-input
-                  v-model="flight_params.passengers"
-                  type="number"
-                  label="passengers"
-                  min="1"
-                  class="bg-white"
-                  :rules="[
-                    (val) => val > 0 || 'Passenger no. cannot be less than 1',
-                    (val) => val <= 10 || 'Passengers cannot exceed',
-                  ]"
-                >
-                  <template v-slot:option="scope">
-                    <q-item v-bind="scope.itemProps">
-                      <q-item-section>
-                        <q-item-label>{{ scope.opt.label }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                </q-input>
-              </div>
-              <div class="col-12 col-sm-5 justify-end">
-                <q-btn
-                  label="Find Flight"
-                  icon="flight_takeoff"
-                  class="btn-kq"
-                  color="primary"
-                  type="submit"
-                  no-caps
-                ></q-btn>
-              </div>
+            <div class="col-12 col-sm-3">
+              <q-input
+                outlined
+                readonly
+                :model-value="timeline.from + ' - ' + timeline.to"
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date v-model="timeline" range>
+                       
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div>
+            <div class="col-12 col-sm-2">
+              <q-btn
+                label="Explore"
+                rounded="3"
+                class="btn-kq"
+                outline=""
+                color="secondary"
+                type="submit"
+                no-caps
+              ></q-btn>
             </div>
           </div>
         </q-form>
@@ -156,7 +163,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch, toRaw } from "vue";
+import { ref, reactive, onMounted, watch } from "vue";
 import { useAppStore } from "@/stores/main";
 import { QSpinnerCube, useQuasar } from "quasar";
 import { useRouter } from "vue-router";
@@ -169,46 +176,40 @@ const routes = reactive({
   ToOptions: [],
 });
 
-const trip_pabel = ref("Round Trip");
-const tripValues = {
-  true: "Round Trip",
-  false: "One Way",
-};
 var flight_params = ref({
-  arrival: null,
-  departure: null,
-  from: null,
-  to: null,
+  depart: null,
+  destination: null,
   passengers: 1,
-  trip_type: false,
-  class_type: "Any",
+  trip_type: "Return",
+  class_type: "Economy",
   warning: false,
 });
 
-watch(flight_params.value.trip_type, (val, old) => {
-  if (val) trip_label = tripValues[val.toString];
-  else trip_label = tripValues[val.toString];
-});
+const timeline = ref({ from: '', to: '' });
+
+watch(
+  () => flight_params.value.trip_type,
+  (val, old) => {
+    if (val) {
+    }
+  }
+);
 
 const TripOptions = ref([
   {
-    label: "Two Way",
+    label: "Return",
     value: "return",
   },
   {
     label: "One Way",
-    value: "direct",
+    value: "oneway",
   },
 ]);
 
 const classOptions = [
   {
-    label: "Any",
-    value: "Any",
-  },
-  {
     label: "Economy",
-    value: "Economy",
+    value: "economy",
   },
   {
     label: "Business",
@@ -216,7 +217,7 @@ const classOptions = [
   },
   {
     label: "First Class",
-    value: "First_class",
+    value: "First_Class",
   },
 ];
 
@@ -286,8 +287,8 @@ const getFlight = async () => {
   router.push({
     name: "booking",
     query: {
-      to: flight_params.value.to?.value,
-      from: flight_params.value.from?.value,
+      to: flight_params.value.destination?.value,
+      from: flight_params.value.depart?.value,
     },
   });
 };
@@ -356,12 +357,16 @@ onMounted(async () => {
 .flight_from {
   min-width: 300px;
 }
+
 .border_tink {
   border-radius: 4px;
 }
+
 .btn-kq {
   font-size: 19px;
+  bcakground: var(--main-color) !important;
 }
+
 .k-margin {
   margin-left: 2px;
 }
